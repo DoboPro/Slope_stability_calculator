@@ -9,15 +9,16 @@ export class SceneService {
 
   // シーン
   private scene: THREE.Scene;
+  public onFlg: boolean = false;
 
   // レンダラー
   private renderer!: THREE.WebGLRenderer;
 
   // カメラ
-  private camera!: THREE.PerspectiveCamera;
-  private aspectRatio: number = 0;
-  private Width: number = 0;
-  private Height: number = 0;
+  private camera!: THREE.OrthographicCamera;
+  // private aspectRatio: number = 0;
+  // private Width: number = 0;
+  // private Height: number = 0;
 
   private GridHelper!: THREE.GridHelper;
 
@@ -27,29 +28,26 @@ export class SceneService {
     this.scene = new THREE.Scene();
     // シーンの背景を白に設定
     // this.scene.background = new THREE.Color(0xf0f0f0);
-    this.scene.background = new THREE.Color( 0xffffff );
+    this.scene.background = new THREE.Color(0xffffff);
     // レンダラーをバインド
     this.render = this.render.bind(this);
 
   }
 
   public OnInit(aspectRatio: number,
-                canvasElement: HTMLCanvasElement,
-                deviceRatio: number,
-                Width: number,
-                Height: number): void {
+    canvasElement: HTMLCanvasElement,
+    deviceRatio: number,
+    Width: number,
+    Height: number): void {
     // カメラ
-    this.aspectRatio = aspectRatio;
-    this.Width = Width;
-    this.Height = Height;
-    this.createCamera(aspectRatio, Width, Height);
+    this.createCamera(Width, Height);
     // 環境光源
     this.add(new THREE.AmbientLight(0xf0f0f0));
     // レンダラー
     this.createRender(canvasElement,
-                      deviceRatio,
-                      Width,
-                      Height);
+      deviceRatio,
+      Width,
+      Height);
     // コントロール
     this.addControls();
 
@@ -63,44 +61,36 @@ export class SceneService {
   private createHelper() {
     this.GridHelper = new THREE.GridHelper(200, 20);
     this.GridHelper.geometry.rotateX(Math.PI / 2);
-    this.scene.add(this.GridHelper);                      
+    this.scene.add(this.GridHelper);
   }
 
   // コントロール
   public addControls() {
     const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    controls.enableRotate = false;
     controls.addEventListener('change', this.render);
   }
 
   // カメラの初期化
-  public createCamera(aspectRatio: number,
-                      Width: number, Height: number ) {
-
-    aspectRatio = (aspectRatio === null) ? this.aspectRatio : aspectRatio;
-    Width = (Width === null) ? this.Width : Width;
-    Height = (Height === null) ? this.Height : Height;
-
-    const target = this.scene.getObjectByName('camera');
-    if (target !== undefined) {
-      this.scene.remove(this.camera);
-    }
-    this.camera = new THREE.PerspectiveCamera(
-      70,
-      aspectRatio,
+  public createCamera(w: number, h: number) {
+    this.camera = new THREE.OrthographicCamera(
+      -w / 40,
+      w / 30,
+      h / 20,
+      -h / 60,
       0.1,
-      1000
-    );
-    this.camera.position.set(0, -50, 20);
-    this.camera.name = 'camera';
+      200);
+
+    this.camera.position.set(0, 0, 10);
     this.scene.add(this.camera);
 
   }
 
   // レンダラーを初期化する
   public createRender(canvasElement: HTMLCanvasElement,
-                      deviceRatio: number,
-                      Width: number,
-                      Height: number): void {
+    deviceRatio: number,
+    Width: number,
+    Height: number): void {
     this.renderer = new THREE.WebGLRenderer({
       preserveDrawingBuffer: true,
       canvas: canvasElement,
@@ -115,8 +105,8 @@ export class SceneService {
 
   // リサイズ
   public onResize(deviceRatio: number,
-                  Width: number,
-                  Height: number): void {
+    Width: number,
+    Height: number): void {
 
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(Width, Height);
@@ -129,7 +119,7 @@ export class SceneService {
   }
 
   // レンダリングのサイズを取得する
-  public getBoundingClientRect(): ClientRect | DOMRect  {
+  public getBoundingClientRect(): ClientRect | DOMRect {
     return this.renderer.domElement.getBoundingClientRect();
   }
 
@@ -139,6 +129,7 @@ export class SceneService {
       this.scene.add(obj);
     }
   }
+
 
   // シーンのオブジェクトを削除する
   public remove(...threeObject: THREE.Object3D[]): void {
@@ -169,5 +160,8 @@ export class SceneService {
     };
   }
 
+  // public RendererDomElement(): Node {
+  //   return this.renderer.domElement;
+  // }
 
 }
