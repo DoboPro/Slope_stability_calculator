@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from '@three-ts/orbit-controls';
+// import { GUI } from './libs/dat.gui.module.js';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,10 @@ export class SceneService {
   // private aspectRatio: number = 0;
   // private Width: number = 0;
   // private Height: number = 0;
+
+  // gui
+  public gui: GUI;
+  private params: any;          // GridHelperの表示制御
 
   private GridHelper!: THREE.GridHelper;
 
@@ -74,10 +79,10 @@ export class SceneService {
   // カメラの初期化
   public createCamera(w: number, h: number) {
     this.camera = new THREE.OrthographicCamera(
-      -w / 40,
-      w / 30,
-      h / 20,
-      -h / 60,
+      -w,
+      w,
+      h,
+      -h,
       0.1,
       200);
 
