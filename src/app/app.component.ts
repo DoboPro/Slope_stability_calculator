@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { Component,OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserInfoService } from './providers/user-info.service'
 import { ResultDataService } from './providers/result-data.service';
 // import { PrintService } from './components/print/print.service';
@@ -10,6 +10,8 @@ import { ResultDataService } from './providers/result-data.service';
 // import { ResultReacService } from './components/result/result-reac/result-reac.service';
 // import { DataHelperModule } from './providers/data-helper.module';
 
+
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,15 +21,15 @@ export class AppComponent implements OnInit {
 
   // btnReac: string;
   constructor(private _router: Router,
-              private ResultData: ResultDataService,
-              public user:UserInfoService,
-  ) { 
+    private ResultData: ResultDataService,
+    public user: UserInfoService,
+  ) {
   }
 
   ngOnInit() {
     this.user.isContentsDailogShow = false;
   }
-  
+
   // 計算結果表示ボタンを無効にする
   // public disableResultButton() {
   //   this.fsec.clear();
@@ -41,7 +43,9 @@ export class AppComponent implements OnInit {
 
   public contentsDailogShow(id: string): void {
     this.deactiveButtons();
-    document.getElementById(id).classList.add('active');
+    // if (document.getElementById(id) !== null) {
+    //   document.getElementById(id).classList.add('active');
+    // }
     this.user.isContentsDailogShow = true;
     //this.setDialogHeight();
   }
@@ -61,7 +65,7 @@ export class AppComponent implements OnInit {
   // contents-dialogの高さをウィンドウサイズに合わせる
   setDialogHeight() {
     setTimeout(function () {
-      const dialog = document.getElementById('contents-dialog-id');
+      const dialog: any = document.getElementById('contents-dialog-id');
       // ヘッダ領域を取得
       const header = document.getElementsByClassName('header');
       const container = document.getElementsByClassName('container');
@@ -72,12 +76,12 @@ export class AppComponent implements OnInit {
   }
 
   public getDialogHeight(): number {
-    const dialog = document.getElementById('contents-dialog-id');
+    const dialog: any = document.getElementById('contents-dialog-id');
     let dialogHeight = parseFloat(dialog.style.height); // ヘッダー高さを引く
-    if(isNaN(dialogHeight)){
+    if (isNaN(dialogHeight)) {
       dialogHeight = window.innerHeight - 200; // メニューとヘッダー高さを引く
     } else {
-      dialogHeight -=  80;
+      dialogHeight -= 80;
     }
     return dialogHeight;
   }

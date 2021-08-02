@@ -22,7 +22,7 @@ export class SceneService {
   // private Height: number = 0;
 
   // gui
-  public gui: GUI;
+  // public gui: GUI;
   private params: any;          // GridHelperの表示制御
 
   private GridHelper!: THREE.GridHelper;

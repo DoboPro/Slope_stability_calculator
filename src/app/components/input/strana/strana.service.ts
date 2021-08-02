@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DataHelperModule } from 'src/app/providers/data-helper.module';
+// import { DataHelperModule } from 'src/app/providers/data-helper.module';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class StranaService {
   public strana!: any[];
   strana_tmp: any;
 
-  constructor(private helper: DataHelperModule) {
+  constructor() {
     this.clear();
   }
 

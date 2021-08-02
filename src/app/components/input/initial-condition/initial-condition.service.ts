@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DataHelperModule } from 'src/app/providers/data-helper.module';
+// import { DataHelperModule } from 'src/app/providers/data-helper.module';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +7,7 @@ import { DataHelperModule } from 'src/app/providers/data-helper.module';
 export class InitialConditionService {
   public initialCondition!: any[];
 
-  constructor(private helper: DataHelperModule) {
+  constructor() {
     this.clear();
   }
 
@@ -62,14 +62,14 @@ export class InitialConditionService {
   }
 
   private convertNumber(item: any): any {
-    const seismic:  number = this.helper.toNumber(item['seismic ']);
-    const dWidth:   number = this.helper.toNumber(item['dWidth  ']);
-    const floatP:   number = this.helper.toNumber(item['floatP  ']);
-    const waterDif: number = this.helper.toNumber(item['waterDif']);
-    const calcShow: number = this.helper.toNumber(item['calcShow']);
-    const x0:       number = this.helper.toNumber(item['x0      ']);
-    const y0:       number = this.helper.toNumber(item['y0      ']);
-    const r0:       number = this.helper.toNumber(item['r0      ']);
+    const seismic:  number = this.toNumber(item['seismic ']);
+    const dWidth:   number = this.toNumber(item['dWidth  ']);
+    const floatP:   number = this.toNumber(item['floatP  ']);
+    const waterDif: number = this.toNumber(item['waterDif']);
+    const calcShow: number = this.toNumber(item['calcShow']);
+    const x0:       number = this.toNumber(item['x0      ']);
+    const y0:       number = this.toNumber(item['y0      ']);
+    const r0:       number = this.toNumber(item['r0      ']);
     return {
       seismic,
       dWidth, 
@@ -81,5 +81,23 @@ export class InitialConditionService {
       r0,      
      
     };
+  }
+
+   // 文字列string を数値にする
+   public toNumber(num: string): number {
+    let result : any;
+    try {
+      const tmp: string = num.toString().trim();
+      if (tmp.length > 0) {
+        result = ((n: number) => (isNaN(n) ? null : n))(+tmp);
+      }
+    } catch {
+      result = null;
+    }
+    // if (digit != null) {
+    //   const dig: number = 10 ** digit;
+    //   result = Math.round(result * dig) / dig;
+    // }
+    return result;
   }
 }

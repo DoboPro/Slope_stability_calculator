@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DataHelperModule } from 'src/app/providers/data-helper.module';
+// import { DataHelperModule } from 'src/app/providers/data-helper.module';
 
 
 @Injectable({
@@ -9,7 +9,7 @@ export class LoadService {
 
   public load!: any[];
 
-  constructor(private helper: DataHelperModule) {
+  constructor() {
     this.clear();
   }
   
@@ -51,11 +51,29 @@ export class LoadService {
   }
 
   private convertNumber(item: any): any {
-    const x: number = this.helper.toNumber(item['x']);
-    const y: number = this.helper.toNumber(item['y']);
+    const x: number = this.toNumber(item['x']);
+    const y: number = this.toNumber(item['y']);
     return {
       x,
       y
     };
+  }
+
+   // 文字列string を数値にする
+   public toNumber(num: string): number {
+    let result : any;
+    try {
+      const tmp: string = num.toString().trim();
+      if (tmp.length > 0) {
+        result = ((n: number) => (isNaN(n) ? null : n))(+tmp);
+      }
+    } catch {
+      result = null;
+    }
+    // if (digit != null) {
+    //   const dig: number = 10 ** digit;
+    //   result = Math.round(result * dig) / dig;
+    // }
+    return result;
   }
 }

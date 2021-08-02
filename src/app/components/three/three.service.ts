@@ -1,26 +1,32 @@
 import { Injectable } from '@angular/core';
+import { StranaService } from '../input/strana/strana.service';
+import { SurfaceService } from '../input/surface/surface.service';
+import { ThreeLoadService } from './geometry/three-load.service';
+import { ThreeStranaService } from './geometry/three-strana.service';
+import { ThreeSurfaceService } from './geometry/three-surface.service';
+import { ThreeWaterlevelService } from './geometry/three-waterlevel.service';
+import { SceneService } from './scene.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThreeService {
 
-  constructor() { }
+  constructor(private scene: SceneService,
+    private surface: ThreeSurfaceService,
+    private strana:ThreeStranaService,
+    private waterlevel:ThreeWaterlevelService,
+    private load:ThreeLoadService) { }
 
-  public ClearData(): void {
-    // for (const mesh of this.nodeList.children) {
-    //   // 文字を削除する
-    //   while (mesh.children.length > 0) {
-    //     const object = mesh.children[0];
-    //     object.parent.remove(object);
-    //   }
-    // }
-    // // オブジェクトを削除する
-    // this.nodeList.children= new Array();
-    // // this.nodeList = new Array();
-    // this.baseScale = 1;
-    // this.maxDistance = 0;
-    // this.minDistance = 0;
-    // this.center = { x: 0, y: 0 };
+
+  //////////////////////////////////////////////////////
+  // ファイルを開く処理する
+  public fileload(): void {
+    // ファイルを読み込んだ
+    // this.surface.changeData();
+    // this.load.changeData();
+    // this.waterlevel.changeData();
+    // this.strana.ResetData();
+    // this.scene.render();
   }
 }
