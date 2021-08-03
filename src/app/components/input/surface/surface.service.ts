@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class SurfaceService {
 
-  public surface!: any[];
+  public surface: any[];
 
   constructor() {
     this.clear();
@@ -15,7 +15,7 @@ export class SurfaceService {
     this.surface = new Array();
   }
 
-  public getSurfaceColums(index: number): any {
+  public getSurfaceColumns(index: number): any {
     let result: any = null;
     for (const tmp of this.surface) {
       if (tmp.id.toString() === index.toString()) {
@@ -25,7 +25,7 @@ export class SurfaceService {
     }
     // 対象データが無かった時に処理
     if (result == null) {
-      result = { x: '', y: '' };
+      result = { id: index, x: '', y: '' };
       this.surface.push(result);
     }
     return result;
@@ -33,7 +33,7 @@ export class SurfaceService {
 
 
   // ファイルを読み込む
-  public setSurfaceJson(jsonData:any):void{
+  public setSurfaceJson(jsonData: any): void {
     if (!('surface' in jsonData)) {
       return;
     }
@@ -57,21 +57,21 @@ export class SurfaceService {
     };
   }
 
-    // 文字列string を数値にする
-    public toNumber(num: string): number {
-      let result : any;
-      try {
-        const tmp: string = num.toString().trim();
-        if (tmp.length > 0) {
-          result = ((n: number) => (isNaN(n) ? null : n))(+tmp);
-        }
-      } catch {
-        result = null;
+  // 文字列string を数値にする
+  public toNumber(num: string): number {
+    let result: any;
+    try {
+      const tmp: string = num.toString().trim();
+      if (tmp.length > 0) {
+        result = ((n: number) => (isNaN(n) ? null : n))(+tmp);
       }
-      // if (digit != null) {
-      //   const dig: number = 10 ** digit;
-      //   result = Math.round(result * dig) / dig;
-      // }
-      return result;
+    } catch {
+      result = null;
     }
+    // if (digit != null) {
+    //   const dig: number = 10 ** digit;
+    //   result = Math.round(result * dig) / dig;
+    // }
+    return result;
+  }
 }

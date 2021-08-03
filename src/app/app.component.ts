@@ -41,13 +41,11 @@ export class AppComponent implements OnInit {
     this.user.isContentsDailogShow = false;
   }
 
-  public contentsDailogShow(id: string): void {
+  public contentsDailogShow(id): void {
     this.deactiveButtons();
-    // if (document.getElementById(id) !== null) {
-    //   document.getElementById(id).classList.add('active');
-    // }
+    document.getElementById(id).classList.add('active');
     this.user.isContentsDailogShow = true;
-    //this.setDialogHeight();
+    this.setDialogHeight();
   }
 
   // アクティブになっているボタンを全て非アクティブにする

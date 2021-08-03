@@ -66,5 +66,29 @@ export class ThreeWaterlevelService {
   
     // }
 
+    //シートの選択行が指すオブジェクトをハイライトする
+  public selectChange(index): void{
+
+    if (this.currentIndex === index){
+      //選択行の変更がないとき，何もしない
+      return
+    }
+
+    //全てのハイライトを元に戻し，選択行のオブジェクトのみハイライトを適応する
+    for (let item of this.waterlevelList.children){
+
+      item['material']['color'].setHex(0X000000);
+
+      if (item.name === 'surface' + index.toString()){
+
+        item['material']['color'].setHex(0X00A5FF);
+      }
+    }
+
+    this.currentIndex = index;
+
+    this.scene.render();
+  }
+
 
 }

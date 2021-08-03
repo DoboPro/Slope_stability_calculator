@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class WaterlevelService {
- 
+
   public waterlevel!: any[];
 
   constructor() {
@@ -16,7 +16,7 @@ export class WaterlevelService {
     this.waterlevel = new Array();
   }
 
-  public getwaterlevelColums(index: number): any {
+  public getWaterlevelColums(index: number): any {
     let result: any = null;
     for (const tmp of this.waterlevel) {
       if (tmp.id.toString() === index.toString()) {
@@ -26,7 +26,7 @@ export class WaterlevelService {
     }
     // 対象データが無かった時に処理
     if (result == null) {
-      result = { x: '', y: '' };
+      result = { id: index, x: '', y: '' };
       this.waterlevel.push(result);
     }
     return result;
@@ -34,7 +34,7 @@ export class WaterlevelService {
 
 
   // ファイルを読み込む
-  public setWaterlevelJson(jsonData:any):void{
+  public setWaterlevelJson(jsonData: any): void {
     if (!('waterlevel' in jsonData)) {
       return;
     }
@@ -58,9 +58,9 @@ export class WaterlevelService {
     };
   }
 
-   // 文字列string を数値にする
-   public toNumber(num: string): number {
-    let result : any;
+  // 文字列string を数値にする
+  public toNumber(num: string): number {
+    let result: any;
     try {
       const tmp: string = num.toString().trim();
       if (tmp.length > 0) {

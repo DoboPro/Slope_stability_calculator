@@ -1,1 +1,20 @@
-<p>soil works!</p>
+<div class="datasheet_inner" [style.width.px]="width">
+    <div class="btn-group">
+      <nav>
+        <a
+          routerLink="/soil"
+          routerLinkActive="selected-item"
+          class="btn-change active"
+          >土質定数</a
+        >
+        <a
+          routerLink="/strana"
+          routerLinkActive="selected-item"
+          class="btn-change"
+          >地層折点</a
+        >
+      </nav>
+    </div>
+  
+    <app-sheet #grid [options]="options"></app-sheet>
+  </div>

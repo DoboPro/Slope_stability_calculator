@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 })
 export class LoadService {
 
-  public load!: any[];
+  public load : any[];
 
   constructor() {
     this.clear();
@@ -17,7 +17,7 @@ export class LoadService {
     this.load = new Array();
   }
 
-  public getLoadColums(index: number): any {
+  public getLoadColumns(index: number): any {
     let result: any = null;
     for (const tmp of this.load) {
       if (tmp.id.toString() === index.toString()) {
@@ -27,7 +27,7 @@ export class LoadService {
     }
     // 対象データが無かった時に処理
     if (result == null) {
-      result = { x: '', y: '' };
+      result = {id:'', 始点x: '', 終点x: '', 荷重量:'', };
       this.load.push(result);
     }
     return result;
@@ -43,19 +43,22 @@ export class LoadService {
     for (const index of Object.keys(json)) {
       const item = this.convertNumber(json[index]);
       const result = {
-        x: (item.x === null) ? '' : item.x.toFixed(3),
-        y: (item.y === null) ? '' : item.y.toFixed(3)
+        x_s: (item.x_s === null) ? '' : item.x_s.toFixed(3),
+        x_d: (item.x_d === null) ? '' : item.x_d.toFixed(3),
+        loadAmount: (item.loadAmount=== null) ? '' : item.loadAmount.toFixed(3)
       };
       this.load.push(result);
     }
   }
 
   private convertNumber(item: any): any {
-    const x: number = this.toNumber(item['x']);
-    const y: number = this.toNumber(item['y']);
+    const x_s: number = this.toNumber(item['x_s']);
+    const x_d: number = this.toNumber(item['x_d']);
+    const loadAmount:number = this.toNumber(item['loadAmount']);
     return {
-      x,
-      y
+      x_s,
+      x_d,
+      loadAmount
     };
   }
 
