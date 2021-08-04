@@ -2,8 +2,6 @@ import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { MatInputModule } from "@angular/material/input";
 
-import { DataHelperModule } from "src/app/providers/data-helper.module";
-
 @Component({
   selector: "app-pager",
   templateUrl: "./pager.component.html",
@@ -19,7 +17,7 @@ export class PagerComponent implements OnInit {
   public Editing: boolean = false;
   public page: number = 0;
 
-  constructor(private helper: DataHelperModule) {
+  constructor() {
     this.changePage(1);
   }
 
@@ -91,9 +89,9 @@ export class PagerComponent implements OnInit {
     let value: number;
 
     if (id === null) {
-      value = this.helper.toNumber(this.myControl.value.number2);
+      value = this.toNumber(this.myControl.value.number2);
     } else {
-      value = this.helper.toNumber(id);
+      value = this.toNumber(id);
     }
 
     if (value !== null) {
@@ -101,5 +99,22 @@ export class PagerComponent implements OnInit {
       this.changePage(value);
       this.Editing = false;
     }
+  }
+
+  public toNumber(num: string): number {
+    let result : any;
+    try {
+      const tmp: string = num.toString().trim();
+      if (tmp.length > 0) {
+        result = ((n: number) => (isNaN(n) ? null : n))(+tmp);
+      }
+    } catch {
+      result = null;
+    }
+    // if (digit != null) {
+    //   const dig: number = 10 ** digit;
+    //   result = Math.round(result * dig) / dig;
+    // }
+    return result;
   }
 }

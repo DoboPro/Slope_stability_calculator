@@ -1,4 +1,4 @@
-<!-- <div class="datasheet_inner" [style.width.px]="width">
+<div class="datasheet_inner" [style.width.px]="width">
     <div class="boxContainer">
       <div class="btn-group">
         <nav>
@@ -6,10 +6,6 @@
           <a routerLink="/strana" routerLinkActive="selected-item" class="btn-change active">地層折点</a>
         </nav>
       </div>
-  +
-
-
-  6
       <div class="pager">
         <app-pager (event)="onReceiveEventFromChild($event)"></app-pager>
       </div>
@@ -18,6 +14,7 @@
         <p>{{ strana_name }}</p>
       </div>
     </div>
-  
+    <div style="width:290px">
     <app-sheet #grid [options]="options"></app-sheet>
-  </div> -->
+    </div>
+  </div>

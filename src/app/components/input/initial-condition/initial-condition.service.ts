@@ -7,6 +7,22 @@ import { Injectable } from '@angular/core';
 export class InitialConditionService {
   public initialCondition!: any[];
 
+  public seimic
+  public dWidth
+  public floatP :string[] =[
+    '考慮する', '間隙水圧'
+  ];
+  public waterDif
+  public diagonal:string[] = [
+    '右上がり','左上がり'
+  ]
+  public calcShow:string[] = [
+    '表示する','表示しない'
+  ]
+  public x0
+  public y0
+  public r0
+
   constructor() {
     this.clear();
   }
@@ -29,6 +45,7 @@ export class InitialConditionService {
                   dWidth: '', 
                   floatP: '', 
                 waterDif: '', 
+                diagonal:'',
                 calcShow: '',
                       x0: '', 
                       y0: '', 

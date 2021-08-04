@@ -1,1 +1,65 @@
-<p>initial-condition works!</p>
+<form>
+    <div class="soilHorizon">
+        <label>水平震度</label>:
+        <div class="soilHorizon-input">
+            <input type="number" name="seismic" [(ngModel)]="seismic" />m
+        </div>
+    </div>
+    <div class="soilHorizon">
+        <label>分割幅</label>:
+        <div class="soilHorizon-input">
+            <input type="number" name="dWidth" [(ngModel)]="dWidth" />m
+        </div>
+    </div>
+    <div class="soilHorizon">
+        <label>浮力の考慮</label>:
+        <div class="soilHorizon-input">
+            <select id="floatP" required>
+                <option *ngFor="let i of floatP" [value]="floatP">
+                    {{i}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="soilHorizon">
+        <label>飽和時と自然状態の単位体積重量の差</label>:
+        <div class="soilHorizon-input">
+            <input type="number" name="waterDif" [(ngModel)]="waterDif" />
+        </div>
+    </div>
+    <div class="soilHorizon">
+        <label>斜面の形状</label>:
+        <div class="soilHorizon-input">
+            <select id="diagonal" required>
+                <option *ngFor="let i of diagonal" [value]="diagonal">
+                    {{i}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="soilHorizon">
+        <label>計算過程</label>:
+        <div class="soilHorizon-input">
+            <select id="diagonal" required>
+                <option *ngFor="let i of calcShow" [value]="calcShow">
+                    {{i}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="soilHorizon">
+        <label>分割円の中心初期値x0</label>:
+        <div class="soilHorizon-input">
+            <input type="number" name="x0" [(ngModel)]="x0" />m
+        </div>
+    </div>
+    <div class="soilHorizon">
+        <label>分割円の中心初期値y0</label>:
+        <div class="soilHorizon-input">
+            <input type="number" name="y0" [(ngModel)]="y0" />m
+        </div>
+    </div>
+    <div class="soilHorizon">
+        <label>すべり円の半径初期値r0</label>:
+        <div class="soilHorizon-input">
+            <input type="number" name="r0" [(ngModel)]="r0" />m
+        </div>
+    </div>
+</form>
