@@ -21,12 +21,19 @@ export class ThreeService {
     private waterlevel: ThreeWaterlevelService,
     private load: ThreeLoadService) { }
 
+  //////////////////////////////////////////////////////
+  // 初期化
+  public OnInit(): void {
+    this.surface.OnInit();
+    // this.member.OnInit();
+  }
+
 
   //////////////////////////////////////////////////////
   // ファイルを開く処理する
   public fileload(): void {
     // ファイルを読み込んだ
-    // this.surface.changeData();
+    this.surface.changeData();
     // this.load.changeData();
     // this.waterlevel.changeData();
     // this.strana.ResetData();
@@ -38,21 +45,30 @@ export class ThreeService {
   public changeData(mode: string = "", index: number = 0): void {
     switch (mode) {
       case "surface":
-        this.surface.selectChange(index);
+        this.surface.changeNode(
+          this.surface.changeData());
         break;
 
-      case "waterlevel":
-        this.waterlevel.selectChange(index);
-        break;
+      //   case "waterlevel":
+      //     this.waterlevel.changeData();
+      //     break;
 
-      case "load":
-        this.load.selectChange(index);
-        break;
+      //   case "load":
+      //     this.load.changeData();
+      //     break;
 
-        case "soil":
-          // this.load.selectChange(index);
-          break;
+      //     case "soil":
+      //       // this.load.selectChange(index);
+      //       break;
+      default:
+        // 何御しない
+        return;
     }
+
+    // 再描画
+    this.scene.render();
+
+    this.currentIndex = index;
   }
 
   //////////////////////////////////////////////////////
@@ -74,9 +90,9 @@ export class ThreeService {
         this.load.selectChange(index);
         break;
 
-        case "soil":
-          // this.load.selectChange(index);
-          break;
+      case "soil":
+        // this.load.selectChange(index);
+        break;
     }
   }
 
@@ -92,17 +108,33 @@ export class ThreeService {
     }
 
     switch (this.mode) {
-    
+
 
       case "soil":
         this.strana.changeCase(currentPage);
         break;
 
-  
-    this.currentIndex = currentPage;
 
-    // 再描画
-    this.scene.render();
+        this.currentIndex = currentPage;
+
+        // 再描画
+        this.scene.render();
     }
+  }
+
+  //////////////////////////////////////////////////////
+  // マウス位置とぶつかったオブジェクトを検出する
+  public detectObject(mouse: THREE.Vector2, action: string): void {
+    const raycaster = this.scene.getRaycaster(mouse);
+
+    switch (this.mode) {
+      case "surface": // 節点データの更新
+        this.surface.detectObject(raycaster, action);
+        break;
+
+
+    }
+    // 再描画
+    //this.scene.render();
   }
 }

@@ -51,10 +51,32 @@ export class SurfaceService {
   private convertNumber(item: any): any {
     const x: number = this.toNumber(item['x']);
     const y: number = this.toNumber(item['y']);
+    const z: number = this.toNumber(item['z']);
     return {
       x,
-      y
+      y,
+      z
     };
+  }
+
+  public getSurfaceJson(empty: number = null ): object {
+
+    const jsonData: object = {};
+
+    for (const row of this.surface) {
+
+      const item = this.convertNumber(row);
+      if (item.x == null && item.y == null) {
+        continue;
+      }
+
+      const key: string = row.id;
+      jsonData[key] = {
+        x: (item.x == null) ? empty : item.x,
+        y: (item.y == null) ? empty : item.y,
+      };
+    }
+    return jsonData;
   }
 
   // 文字列string を数値にする

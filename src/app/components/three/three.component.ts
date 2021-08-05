@@ -16,7 +16,7 @@ export class ThreeComponent implements AfterViewInit {
   constructor(private ngZone: NgZone,
     private scene: SceneService) {
 
-    THREE.Object3D.DefaultUp.set(0, 1, 0);
+    THREE.Object3D.DefaultUp.set(0, 0, 1);
   }
 
   private get canvas(): HTMLCanvasElement {
@@ -28,7 +28,7 @@ export class ThreeComponent implements AfterViewInit {
       this.canvas,
       devicePixelRatio,
       window.innerWidth,
-      window.innerHeight );
+      window.innerHeight - 120);
 
     // const element = this.scene.RendererDomElement();
     // const div = document.getElementById('myCanvas');        // ボタンを置きたい場所の手前の要素を取得

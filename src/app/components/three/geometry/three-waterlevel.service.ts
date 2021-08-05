@@ -21,7 +21,7 @@ export class ThreeWaterlevelService {
   private currentIndex!: string;
 
   // 大きさを調整するためのスケール
-  private scale!: number;
+  private scale: number;
   private params: any;          // GUIの表示制御
   private gui: any;
 

@@ -11,7 +11,7 @@ export class DataHelperModule {
 
   }
   // 文字列string を数値にする
-  public toNumber(num: string): number {
+  public toNumber(num: string, digit: number = null): number {
     let result : any;
     try {
       const tmp: string = num.toString().trim();
@@ -21,10 +21,10 @@ export class DataHelperModule {
     } catch {
       result = null;
     }
-    // if (digit != null) {
-    //   const dig: number = 10 ** digit;
-    //   result = Math.round(result * dig) / dig;
-    // }
+    if (digit != null) {
+      const dig: number = 10 ** digit;
+      result = Math.round(result * dig) / dig;
+    }
     return result;
   }
 }
