@@ -5,9 +5,10 @@ import { GUI } from './libs/dat.gui.module.js';
 import { CSS2DRenderer, CSS2DObject } from './libs/CSS2DRenderer.js';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class SceneService {
+
   // シーン
   private scene: THREE.Scene;
   public onFlg: boolean = false;
@@ -24,7 +25,7 @@ export class SceneService {
 
   // gui
   public gui: GUI;
-  private params: any; // GridHelperの表示制御
+  private params: any;          // GridHelperの表示制御
 
   // helper
   private axisHelper: THREE.AxesHelper;
@@ -44,21 +45,23 @@ export class SceneService {
     this.params = {
       GridHelper: true,
     };
+
   }
 
-  public OnInit(
-    aspectRatio: number,
+  public OnInit(aspectRatio: number,
     canvasElement: HTMLCanvasElement,
     deviceRatio: number,
     Width: number,
-    Height: number
-  ): void {
+    Height: number): void {
     // カメラ
     this.createCamera(Width, Height);
     // 環境光源
     this.add(new THREE.AmbientLight(0xf0f0f0));
     // レンダラー
-    this.createRender(canvasElement, deviceRatio, Width, Height);
+    this.createRender(canvasElement,
+      deviceRatio,
+      Width,
+      Height);
     // コントロール
     this.addControls();
 
@@ -75,7 +78,9 @@ export class SceneService {
       this.render();
     });
     this.gui.open();
+
   }
+
 
   // 床面を生成する
   private createHelper() {
@@ -97,31 +102,27 @@ export class SceneService {
   // カメラの初期化
   public createCamera(Width: number = null, Height: number = null) {
     this.camera = new THREE.OrthographicCamera(
-      -Width / 30,
-      Width / 30,
-      Height / 30,
-      -Height / 30,
+      -Width / 10, Width / 10,
+      Height / 10, -Height / 10,
       0.1,
-      21
-    );
+      21);
 
     this.camera.position.set(0, 0, 10);
     this.camera.name = 'camera';
     this.scene.add(this.camera);
+
   }
 
   // レンダラーを初期化する
-  public createRender(
-    canvasElement: HTMLCanvasElement,
+  public createRender(canvasElement: HTMLCanvasElement,
     deviceRatio: number,
     Width: number,
-    Height: number
-  ): void {
+    Height: number): void {
     this.renderer = new THREE.WebGLRenderer({
       preserveDrawingBuffer: true,
       canvas: canvasElement,
-      alpha: true, // transparent background
-      antialias: true, // smooth edges
+      alpha: true,    // transparent background
+      antialias: true // smooth edges
     });
     this.renderer.setPixelRatio(deviceRatio);
     this.renderer.setSize(Width, Height);
@@ -132,11 +133,18 @@ export class SceneService {
     this.labelRenderer.domElement.style.position = 'absolute';
   }
 
+
   // リサイズ
-  public onResize(deviceRatio: number, Width: number, Height: number): void {
+  public onResize(deviceRatio: number,
+    Width: number,
+    Height: number): void {
+  
+
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(Width, Height);
     this.render();
+
+
   }
 
   // レンダリングする
@@ -156,6 +164,7 @@ export class SceneService {
       this.scene.add(obj);
     }
   }
+
 
   // シーンのオブジェクトを削除する
   public remove(...threeObject: THREE.Object3D[]): void {
@@ -180,8 +189,8 @@ export class SceneService {
     return {
       camera: {
         x: this.camera.position.x,
-        y: this.camera.position.y,
-      },
+        y: this.camera.position.y
+      }
     };
   }
 
@@ -225,4 +234,5 @@ export class SceneService {
     }
     return result;
   }
+
 }
