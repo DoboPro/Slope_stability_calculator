@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+
+import { MatInputModule } from "@angular/material/input";
+import { DragDropModule } from "@angular/cdk/drag-drop";
 // import { CoreModule } from './core/core.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ThreeComponent } from './components/three/three.component';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { MenuComponent } from './components/menu/menu.component';
+import { HttpClientModule, HttpClient } from "@angular/common/http";
+import { MenuComponent } from "./components/menu/menu.component";
 import { WaitDialogComponent } from './components/wait-dialog/wait-dialog.component';
 import { SurfaceComponent } from './components/input/surface/surface.component';
 import { StranaComponent } from './components/input/strana/strana.component';
@@ -44,7 +44,6 @@ import { PagerComponent } from './components/input/pager/pager.component';
     AppRoutingModule,
     HttpClientModule,
     MatInputModule,
-    MatSelectModule,
     DragDropModule,
     FormsModule,
     ReactiveFormsModule,
@@ -53,6 +52,6 @@ import { PagerComponent } from './components/input/pager/pager.component';
     // CoreModule,
   ],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

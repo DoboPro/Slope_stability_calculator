@@ -6,9 +6,10 @@ import { LoadService } from '../components/input/load/load.service';
 import { InitialConditionService } from '../components/input/initial-condition/initial-condition.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class InputDataService {
+
   constructor(
     public surface: SurfaceService,
     public strana: StranaService,
