@@ -2,7 +2,7 @@
     <div class="soilHorizon">
         <label>水平震度</label>:
         <div class="soilHorizon-input">
-            <input type="number" name="seismic" [(ngModel)]="seismic" />
+            <input type="number" name="seismic" [(ngModel)]="seismic" />m
         </div>
     </div>
     <div class="soilHorizon">
@@ -30,6 +30,7 @@
         <label>斜面の形状</label>:
         <div class="soilHorizon-input">
             <select id="diagonal" required>
+
         <option *ngFor="let i of diagonal" [value]="diagonal">
           {{i}}</option>
       </select>
@@ -39,6 +40,7 @@
         <label>計算過程</label>:
         <div class="soilHorizon-input">
             <select id="diagonal" required>
+
         <option *ngFor="let i of calcShow" [value]="calcShow">
           {{i}}</option>
       </select>
