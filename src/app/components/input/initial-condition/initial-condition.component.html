@@ -2,24 +2,28 @@
     <div class="soilHorizon">
         <label>水平震度</label>:
         <div class="soilHorizon-input">
-            <input type="number" name="seismic" [(ngModel)]="seismic" />m
+            <input class="input" id="seimic" name="seimic" type="number" step="1" [(ngModel)]="data.seimic" />
         </div>
     </div>
     <div class="soilHorizon">
         <label>分割幅</label>:
         <div class="soilHorizon-input">
-            <input type="number" name="dWidth" [(ngModel)]="dWidth" />m
+            <input type="number" name="dWidth" [(ngModel)]="data.dWidth" />m
         </div>
     </div>
     <div class="soilHorizon">
-        <label>浮力の考慮</label>:
+        <label>浮力の考慮:</label>
         <div class="soilHorizon-input">
-            <select id="floatP" required>
-                <option *ngFor="let i of floatP" [value]="floatP">
-                    {{i}}</option>
-            </select>
+            <div class="toggle toggle--switch">
+                <form name="form1">
+                    <input type="checkbox" id="toggle--switch" name="g2" class="toggle--checkbox" style="display: none;" (change)="setFloat()">
+                    <label class="toggle--btn" for="toggle--switch"><span class="toggle--feature" data-label-on="考慮する"
+              data-label-off="間隙水圧"></span></label>
+                </form>
+            </div>
         </div>
     </div>
+
     <div class="soilHorizon">
         <label>飽和時と自然状態の単位体積重量の差</label>:
         <div class="soilHorizon-input">
@@ -29,19 +33,19 @@
     <div class="soilHorizon">
         <label>斜面の形状</label>:
         <div class="soilHorizon-input">
-            <select id="diagonal" required>
-                <option *ngFor="let i of diagonal" [value]="diagonal">
-                    {{i}}</option>
-            </select>
+            <!-- <select id="diagonal" required>
+        <option *ngFor="let i of diagonal" [value]="diagonal">
+          {{i}}</option>
+      </select> -->
         </div>
     </div>
     <div class="soilHorizon">
         <label>計算過程</label>:
         <div class="soilHorizon-input">
-            <select id="diagonal" required>
-                <option *ngFor="let i of calcShow" [value]="calcShow">
-                    {{i}}</option>
-            </select>
+            <!-- <select id="diagonal" required>
+        <option *ngFor="let i of calcShow" [value]="calcShow">
+          {{i}}</option>
+      </select> -->
         </div>
     </div>
     <div class="soilHorizon">
