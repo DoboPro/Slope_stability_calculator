@@ -22,6 +22,7 @@ import * as pako from 'pako';
 // import firebase from 'firebase';
 import { SceneService } from '../three/scene.service';
 import { UserInfoService } from 'src/app/providers/user-info.service';
+// import { DataHelperModule } from 'src/app/providers/data-helper.module';
 
 @Component({
   selector: 'app-menu',
@@ -48,7 +49,8 @@ export class MenuComponent implements OnInit {
     private ResultData: ResultDataService,
     private http: HttpClient,
     private three: ThreeService,
-    private user:UserInfoService
+    private user:UserInfoService,
+    // private helper:DataHelperModule
   ) {
     // this.loggedIn = this.user.loggedIn;
     this.fileName = '';
@@ -122,18 +124,17 @@ export class MenuComponent implements OnInit {
 
   // ファイルを保存
   save(): void {
-    // const inputJson: string = JSON.stringify(this.InputData.getInputJson());
-    // const blob = new window.Blob([inputJson], { type: 'text/plain' });
-    // if (this.fileName.length === 0) {
-    //   this.fileName = 'frameWebForJS.json';
-    // }
+    const inputJson: string = JSON.stringify(this.InputData.getInputJson());
+    const blob = new window.Blob([inputJson], { type: 'text/plain' });
+    if (this.fileName.length === 0) {
+      this.fileName = 'soil.json';
+    }
     let ext = '';
-    // if(this.helper.getExt(this.fileName) !== 'json'){
-    //   ext = '.json';
-    // }
-    // FileSaver.saveAs(blob, this.fileName + ext);
+    if(this.InputData.getExt(this.fileName) !== 'json'){
+      ext = '.json';
+    }
+    FileSaver.saveAs(blob, this.fileName + ext);
   }
-
 
   // 計算
   // public calcurate(): void {

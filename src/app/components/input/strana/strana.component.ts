@@ -21,13 +21,16 @@ export class StranaComponent implements OnInit {
   private page = 1;
 
   private columnHeaders = [
-    { title: "X", dataType: "float", format: "#.000", dataIndx: "x", sortable: false, width: 90 },
-    { title: "Y", dataType: "float", format: "#.000", dataIndx: "y", sortable: false, width: 90 },
+    { title: "節点番号", dataType: "float", format: "#.000", dataIndx: "nodeNum", sortable: false, width: 105 },
+    { title: "X", dataType: "float", format: "#.000", dataIndx: "X", sortable: false, width: 105, editable: false, style: { "background": "#dae6f0" } },
+    { title: "Y", dataType: "float", format: "#.000", dataIndx: "y", sortable: false, width: 105, editable: false, style: { "background": "#dae6f0" } },
   ];
 
   private ROWS_COUNT = 15;
-  public inner_width = 500;
-  constructor(private data: StranaService, private app: AppComponent, private three: ThreeService) { }
+  public inner_width = 300;
+  constructor(private data: StranaService, private app: AppComponent, private three: ThreeService) {
+
+  }
 
   ngOnInit(): void {
     this.ROWS_COUNT = this.rowsCount();
@@ -77,7 +80,7 @@ export class StranaComponent implements OnInit {
     height: this.tableHeight(),
     numberCell: {
       show: true, // 行番号
-      width:45
+      width: 45
     },
     colModel: this.columnHeaders,
     animModel: {
@@ -112,7 +115,7 @@ export class StranaComponent implements OnInit {
     }
   };
 
-  width = 500;
+  width = 450;
 
 
 }

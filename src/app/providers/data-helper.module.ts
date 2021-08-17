@@ -1,4 +1,5 @@
 import { NgModule } from "@angular/core";
+import { NodeService } from "../components/input/node/node.service";
 
 @NgModule({
   imports: [],
@@ -7,7 +8,7 @@ import { NgModule } from "@angular/core";
 
 export class DataHelperModule {
 
-  constructor() {
+  constructor(private node:NodeService) {
 
   }
   // 文字列string を数値にする
@@ -27,4 +28,7 @@ export class DataHelperModule {
     }
     return result;
   }
+
+  
+
 }
