@@ -36,4 +36,32 @@ export class InputDataService {
     this.load.setLoadJson(jsonData);
     this.initialCondition.setInitialConditionJson(jsonData);
   }
+
+  // ファイルに保存用データを生成
+  // empty = null: ファイル保存時
+  // empty = 0: 計算時
+  public getInputJson(empty: number = null): object {
+
+    const jsonData = {};
+
+    const node: {} = this.node.getNodeJson(empty);
+    if (Object.keys(node).length > 0) {
+      jsonData['node'] = node;
+    } else if(empty === 0){
+      jsonData['node'] = {};
+    }
+
+
+    return jsonData;
+  }
+
+  // ファイル名から拡張子を取得する関数
+  public getExt(filename: string): string {
+    const pos = filename.lastIndexOf('.');
+    if (pos === -1) {
+      return '';
+    }
+    const ext = filename.slice(pos + 1);
+    return ext.toLowerCase();
+  }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Routes, RouterModule, CanActivate } from '@angular/router';
 import { StranaService } from "./strana.service";
 import { ThreeService } from "../../three/three.service";
-import { DataHelperModule } from "../../../providers/data-helper.module";
+// import { DataHelperModule } from "../../../providers/data-helper.module";
 import { SheetComponent } from "../sheet/sheet.component";
 import pq from "pqgrid";
 import { AppComponent } from "src/app/app.component";
