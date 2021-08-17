@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SurfaceComponent } from './components/input/surface/surface.component';
+import { NodeComponent } from './components/input/node/node.component';
 import { StranaComponent } from './components/input/strana/strana.component';
 import { SoilComponent } from './components/input/strana/soil.component';
 import { WaterlevelComponent } from './components/input/waterlevel/waterlevel.component';
@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'strana', component: StranaComponent },
   { path: 'soil', component: SoilComponent },
   { path: 'waterlevel', component: WaterlevelComponent },
-  { path: 'surface', component: SurfaceComponent },
+  { path: 'node', component: NodeComponent },
 ];
 
 @NgModule({

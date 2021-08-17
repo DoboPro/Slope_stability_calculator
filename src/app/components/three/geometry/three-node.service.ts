@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
-import { SurfaceService } from '../../input/surface/surface.service';
+import { NodeService } from '../../input/node/node.service';
 import { SceneService } from '../scene.service';
 import { CSS2DObject } from '../libs/CSS2DRenderer.js';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ThreeSurfaceService {
+export class ThreeNodeService {
   private currentIndex: string;
   private geometry: THREE.SphereBufferGeometry;
 
@@ -18,7 +18,7 @@ export class ThreeSurfaceService {
 
   private newNodeData: any; // 変更された 節点データ
 
-  private surfaceList: THREE.Object3D;
+  private nodeList: THREE.Object3D;
   private selectionItem: THREE.Object3D; // 選択中のアイテム
   public center: any; // すべての点の重心位置
 
@@ -32,11 +32,11 @@ export class ThreeSurfaceService {
   private objVisible: boolean;
   private txtVisible: boolean;
 
-  constructor(private scene: SceneService, private surface: SurfaceService) {
+  constructor(private scene: SceneService, private node: NodeService) {
     this.geometry = new THREE.SphereBufferGeometry(1);
-    this.surfaceList = new THREE.Object3D();
+    this.nodeList = new THREE.Object3D();
     this.ClearData();
-    this.scene.add(this.surfaceList);
+    this.scene.add(this.nodeList);
     this.currentIndex = null;
 
     this.objVisible = true;
@@ -45,8 +45,8 @@ export class ThreeSurfaceService {
     // gui
     this.scale = 100;
     this.params = {
-      surfaceNo: this.txtVisible,
-      surfaceScale: this.scale,
+      nodeNo: this.txtVisible,
+      nodeScale: this.scale,
     };
     this.gui = null;
   }
@@ -54,8 +54,8 @@ export class ThreeSurfaceService {
   // 初期化
   public OnInit(): void {
     // 節点番号の表示を制御する gui を登録する
-    this.scene.gui.add(this.params, 'surfaceNo').onChange((value) => {
-      for (const mesh of this.surfaceList.children) {
+    this.scene.gui.add(this.params, 'nodeNo').onChange((value) => {
+      for (const mesh of this.nodeList.children) {
         mesh.getObjectByName('font').visible = value;
       }
       this.txtVisible = value;
@@ -66,7 +66,7 @@ export class ThreeSurfaceService {
   // データが変更された時の処理
   public changeData(): object {
     // 入力データを入手
-    const jsonData = this.surface.getSurfaceJson(0);
+    const jsonData = this.node.getNodeJson(0);
     const jsonKeys = Object.keys(jsonData);
     if (jsonKeys.length <= 0) {
       this.ClearData();
@@ -74,24 +74,24 @@ export class ThreeSurfaceService {
     }
 
     // 入力データに無い要素を排除する
-    for (let i = this.surfaceList.children.length - 1; i >= 0; i--) {
+    for (let i = this.nodeList.children.length - 1; i >= 0; i--) {
       const item = jsonKeys.find((key) => {
-        return key === this.surfaceList.children[i].name;
+        return key === this.nodeList.children[i].name;
       });
       if (item === undefined) {
-        const target = this.surfaceList.children[i];
+        const target = this.nodeList.children[i];
         while (target.children.length > 0) {
           const object = target.children[0];
           object.parent.remove(object);
         }
-        this.surfaceList.children.splice(i, 1);
+        this.nodeList.children.splice(i, 1);
       }
     }
 
     // 新しい入力を適用する
     for (const key of jsonKeys) {
       // 既に存在しているか確認する
-      const item = this.surfaceList.children.find((target) => {
+      const item = this.nodeList.children.find((target) => {
         return target.name === key;
       });
       if (item !== undefined) {
@@ -105,13 +105,13 @@ export class ThreeSurfaceService {
           this.geometry,
           new THREE.MeshBasicMaterial({ color: 0x00a5ff })
         );
-        mesh.name = 'surface' + key;
+        mesh.name = 'node' + key;
         mesh.position.x = jsonData[key].x;
         mesh.position.y = jsonData[key].y;
 
-        this.surfaceList.children.push(mesh);
-        this.surfaceList.add(mesh);
-        // this.scene.add(this.surfaceList);
+        this.nodeList.children.push(mesh);
+        this.nodeList.add(mesh);
+        // this.scene.add(this.nodeList);
 
         // 文字をシーンに追加
         const div = document.createElement('div');
@@ -136,7 +136,7 @@ export class ThreeSurfaceService {
   // 最近点からスケールを求める
   private setBaseScale(): void {
     // 入力データを入手
-    const jsonData = this.surface.getSurfaceJson(0);
+    const jsonData = this.node.getNodeJson(0);
     const jsonKeys = Object.keys(jsonData);
     if (jsonKeys.length <= 0) {
       this.ClearData();
@@ -190,7 +190,7 @@ export class ThreeSurfaceService {
     let sc = this.scale / 100; // this.scale は 100 が基準値なので、100 のとき 1 となるように変換する
     sc = Math.max(sc, 0.001); // ゼロは許容しない
 
-    for (const item of this.surfaceList.children) {
+    for (const item of this.nodeList.children) {
       item.scale.x = this.baseScale * sc;
       item.scale.y = this.baseScale * sc;
     }
@@ -199,7 +199,7 @@ export class ThreeSurfaceService {
   // データが変更された時の処理
   public axisData(): object {
     // 入力データを入手
-    const jsonData = this.surface.getSurfaceJson(0);
+    const jsonData = this.node.getNodeJson(0);
     const jsonKeys = Object.keys(jsonData);
     if (jsonKeys.length <= 0) {
       this.ClearData();
@@ -207,17 +207,17 @@ export class ThreeSurfaceService {
     }
 
     // 入力データに無い要素を排除する
-    for (let i = this.surfaceList.children.length - 1; i >= 0; i--) {
+    for (let i = this.nodeList.children.length - 1; i >= 0; i--) {
       const item = jsonKeys.find((key) => {
-        return key === this.surfaceList.children[i].name;
+        return key === this.nodeList.children[i].name;
       });
       if (item === undefined) {
-        const target = this.surfaceList.children[i];
+        const target = this.nodeList.children[i];
         while (target.children.length > 0) {
           const object = target.children[0];
           object.parent.remove(object);
         }
-        this.surfaceList.children.splice(i, 1);
+        this.nodeList.children.splice(i, 1);
       }
     }
 
@@ -262,7 +262,7 @@ export class ThreeSurfaceService {
       mesh.rotation.y = 0.5 * Math.PI + Math.atan2(v.x, v.z);
       mesh.position.set(x, y, z);
 
-      this.surfaceList.children.push(mesh);
+      this.nodeList.children.push(mesh);
 
       // 文字をシーンに追加
       const div = document.createElement('div');
@@ -310,7 +310,7 @@ export class ThreeSurfaceService {
 
   // データをクリアする
   public ClearData(): void {
-    for (const mesh of this.surfaceList.children) {
+    for (const mesh of this.nodeList.children) {
       // 文字を削除する
       while (mesh.children.length > 0) {
         const object = mesh.children[0];
@@ -318,8 +318,8 @@ export class ThreeSurfaceService {
       }
     }
     // オブジェクトを削除する
-    this.surfaceList.children = new Array();
-    // this.surfaceList = new Array();
+    this.nodeList.children = new Array();
+    // this.nodeList = new Array();
     this.baseScale = 1;
     this.maxDistance = 0;
     this.minDistance = 0;
@@ -334,10 +334,10 @@ export class ThreeSurfaceService {
     }
 
     //全てのハイライトを元に戻し，選択行のオブジェクトのみハイライトを適応する
-    for (let item of this.surfaceList.children) {
+    for (let item of this.nodeList.children) {
       item['material']['color'].setHex(0x000000);
 
-      if (item.name === 'surface' + index.toString()) {
+      if (item.name === 'node' + index.toString()) {
         item['material']['color'].setHex(0x00a5ff);
       }
     }
@@ -351,7 +351,7 @@ export class ThreeSurfaceService {
   public visibleChange(flag: boolean, text: boolean, gui: boolean): void {
     // 表示設定
     if (this.objVisible !== flag) {
-      this.surfaceList.visible = flag;
+      this.nodeList.visible = flag;
       this.objVisible = flag;
     }
 
@@ -369,7 +369,7 @@ export class ThreeSurfaceService {
       return;
     }
     this.gui = this.scene.gui
-      .add(this.params, 'surfaceScale', 0, 1000)
+      .add(this.params, 'nodeScale', 0, 1000)
       .step(1)
       .onChange((value) => {
         this.scale = value;
@@ -389,19 +389,19 @@ export class ThreeSurfaceService {
 
   // マウス位置とぶつかったオブジェクトを検出する
   public detectObject(raycaster: THREE.Raycaster, action: string): void {
-    if (this.surfaceList.children.length === 0) {
+    if (this.nodeList.children.length === 0) {
       return; // 対象がなければ何もしない
     }
 
     // 交差しているオブジェクトを取得
-    const intersects = raycaster.intersectObjects(this.surfaceList.children);
+    const intersects = raycaster.intersectObjects(this.nodeList.children);
     if (intersects.length <= 0) {
       return;
     }
 
     switch (action) {
       case 'click':
-        this.surfaceList.children.map((item) => {
+        this.nodeList.children.map((item) => {
           if (intersects.length > 0 && item === intersects[0].object) {
             // 色を赤くする
             const material = item['material'];
@@ -413,7 +413,7 @@ export class ThreeSurfaceService {
 
       case 'select':
         this.selectionItem = null;
-        this.surfaceList.children.map((item) => {
+        this.nodeList.children.map((item) => {
           const material = item['material'];
           if (intersects.length > 0 && item === intersects[0].object) {
             // 色を赤くする
@@ -429,7 +429,7 @@ export class ThreeSurfaceService {
         break;
 
       case 'hover':
-        this.surfaceList.children.map((item) => {
+        this.nodeList.children.map((item) => {
           const material = item['material'];
           if (intersects.length > 0 && item === intersects[0].object) {
             // 色を赤くする

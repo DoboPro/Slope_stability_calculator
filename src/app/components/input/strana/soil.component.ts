@@ -40,7 +40,7 @@ export class SoilComponent implements OnInit {
   ngOnInit(): void {
     this.ROWS_COUNT = this.rowsCount();
     // three.js にモードの変更を通知する
-    // this.three.ChangeMode("surface");
+    // this.three.ChangeMode("node");
 
     // this.three.ChangeMode("strana_names");
     // this.three.ChangePage(1);

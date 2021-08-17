@@ -32,7 +32,7 @@ export class WaterlevelComponent implements OnInit {
   ngOnInit(): void {
     this.ROWS_COUNT = this.rowsCount();
     // three.js にモードの変更を通知する
-    // this.three.ChangeMode("surface");
+    // this.three.ChangeMode("node");
   }
 
    // 指定行row 以降のデータを読み取る

@@ -79,7 +79,7 @@ export class ThreeWaterlevelService {
 
       item['material']['color'].setHex(0X000000);
 
-      if (item.name === 'surface' + index.toString()){
+      if (item.name === 'node' + index.toString()){
 
         item['material']['color'].setHex(0X00A5FF);
       }

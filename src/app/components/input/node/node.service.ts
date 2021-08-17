@@ -3,21 +3,21 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class SurfaceService {
+export class NodeService {
 
-  public surface: any[];
+  public node: any[];
 
   constructor() {
     this.clear();
   }
 
   public clear(): void {
-    this.surface = new Array();
+    this.node = new Array();
   }
 
-  public getSurfaceColumns(index: number): any {
+  public getNodeColumns(index: number): any {
     let result: any = null;
-    for (const tmp of this.surface) {
+    for (const tmp of this.node) {
       if (tmp.id.toString() === index.toString()) {
         result = tmp;
         break;
@@ -26,25 +26,25 @@ export class SurfaceService {
     // 対象データが無かった時に処理
     if (result == null) {
       result = { id: index, x: '', y: '' };
-      this.surface.push(result);
+      this.node.push(result);
     }
     return result;
   }
 
 
   // ファイルを読み込む
-  public setSurfaceJson(jsonData: any): void {
-    if (!('surface' in jsonData)) {
+  public setNodeJson(jsonData: any): void {
+    if (!('node' in jsonData)) {
       return;
     }
-    const json: any = jsonData['surface'];
+    const json: any = jsonData['node'];
     for (const index of Object.keys(json)) {
       const item = this.convertNumber(json[index]);
       const result = {
         x: (item.x === null) ? '' : item.x.toFixed(3),
         y: (item.y === null) ? '' : item.y.toFixed(3)
       };
-      this.surface.push(result);
+      this.node.push(result);
     }
   }
 
@@ -59,11 +59,11 @@ export class SurfaceService {
     };
   }
 
-  public getSurfaceJson(empty: number = null ): object {
+  public getNodeJson(empty: number = null ): object {
 
     const jsonData: object = {};
 
-    for (const row of this.surface) {
+    for (const row of this.node) {
 
       const item = this.convertNumber(row);
       if (item.x == null && item.y == null) {

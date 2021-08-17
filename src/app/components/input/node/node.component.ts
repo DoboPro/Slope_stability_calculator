@@ -3,14 +3,14 @@ import { SheetComponent } from '../sheet/sheet.component';
 import pq from "pqgrid";
 import { ThreeService } from '../../three/three.service';
 import { AppComponent } from 'src/app/app.component';
-import { SurfaceService } from './surface.service';
+import { NodeService } from './node.service';
 
 @Component({
-  selector: 'app-surface',
-  templateUrl: './surface.component.html',
-  styleUrls: ['./surface.component.scss']
+  selector: 'app-node',
+  templateUrl: './node.component.html',
+  styleUrls: ['./node.component.scss']
 })
-export class SurfaceComponent implements OnInit {
+export class NodeComponent implements OnInit {
 
   @ViewChild('grid') grid: SheetComponent;
 
@@ -25,21 +25,21 @@ export class SurfaceComponent implements OnInit {
   public inner_width = 290;
 
   constructor(  
-    private data: SurfaceService,
+    private data: NodeService,
     private app: AppComponent,
     private three: ThreeService) { }
 
   ngOnInit(): void {
     this.ROWS_COUNT = this.rowsCount();
     // three.js にモードの変更を通知する
-    // this.three.ChangeMode("surface");
+    // this.three.ChangeMode("node");
   }
 
    // 指定行row 以降のデータを読み取る
    private loadData(row: number): void {
     for (let i = this.dataset.length + 1; i <= row; i++) {
-      const surface = this.data.getSurfaceColumns(i);
-      this.dataset.push(surface);
+      const node = this.data.getNodeColumns(i);
+      this.dataset.push(node);
     }
   }
 
@@ -87,10 +87,10 @@ export class SurfaceComponent implements OnInit {
       const range = ui.selection.iCells.ranges;
       const row = range[0].r1 + 1;
       const column = range[0].c1;
-       this.three.selectChange('surface', row, column);
+       this.three.selectChange('node', row, column);
     },
     change: (evt, ui) => {
-      this.three.changeData('surface');
+      this.three.changeData('node');
     }
   };
 

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { StranaService } from '../input/strana/strana.service';
-import { SurfaceService } from '../input/surface/surface.service';
+import { NodeService } from '../input/node/node.service';
 import { ThreeLoadService } from './geometry/three-load.service';
 import { ThreeStranaService } from './geometry/three-strana.service';
-import { ThreeSurfaceService } from './geometry/three-surface.service';
+import { ThreeNodeService } from './geometry/three-node.service';
 import { ThreeWaterlevelService } from './geometry/three-waterlevel.service';
 import { SceneService } from './scene.service';
 
@@ -16,7 +16,7 @@ export class ThreeService {
   private currentIndex: number;
 
   constructor(private scene: SceneService,
-    private surface: ThreeSurfaceService,
+    private node: ThreeNodeService,
     private strana: ThreeStranaService,
     private waterlevel: ThreeWaterlevelService,
     private load: ThreeLoadService) { }
@@ -24,7 +24,7 @@ export class ThreeService {
   //////////////////////////////////////////////////////
   // 初期化
   public OnInit(): void {
-    this.surface.OnInit();
+    this.node.OnInit();
     // this.member.OnInit();
   }
 
@@ -33,7 +33,7 @@ export class ThreeService {
   // ファイルを開く処理する
   public fileload(): void {
     // ファイルを読み込んだ
-    this.surface.changeData();
+    this.node.changeData();
     // this.load.changeData();
     // this.waterlevel.changeData();
     // this.strana.ResetData();
@@ -44,9 +44,9 @@ export class ThreeService {
   // データの変更通知を処理する
   public changeData(mode: string = "", index: number = 0): void {
     switch (mode) {
-      case "surface":
-        this.surface.changeNode(
-          this.surface.changeData());
+      case "node":
+        this.node.changeNode(
+          this.node.changeData());
         break;
 
       //   case "waterlevel":
@@ -77,8 +77,8 @@ export class ThreeService {
     //console.log("selectChange", mode, index, index_sub);
 
     switch (mode) {
-      case "surface":
-        this.surface.selectChange(index);
+      case "node":
+        this.node.selectChange(index);
         break;
 
       case "waterlevel":
@@ -128,8 +128,8 @@ export class ThreeService {
     const raycaster = this.scene.getRaycaster(mouse);
 
     switch (this.mode) {
-      case "surface": // 節点データの更新
-        this.surface.detectObject(raycaster, action);
+      case "node": // 節点データの更新
+        this.node.detectObject(raycaster, action);
         break;
 
 

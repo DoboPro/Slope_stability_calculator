@@ -15,7 +15,7 @@ import { ThreeComponent } from './components/three/three.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { MenuComponent } from './components/menu/menu.component';
 import { WaitDialogComponent } from './components/wait-dialog/wait-dialog.component';
-import { SurfaceComponent } from './components/input/surface/surface.component';
+import { NodeComponent } from './components/input/node/node.component';
 import { StranaComponent } from './components/input/strana/strana.component';
 import { SoilComponent } from './components/input/strana/soil.component';
 import { WaterlevelComponent } from './components/input/waterlevel/waterlevel.component';
@@ -30,7 +30,7 @@ import { PagerComponent } from './components/input/pager/pager.component';
     ThreeComponent,
     MenuComponent,
     WaitDialogComponent,
-    SurfaceComponent,
+    NodeComponent,
     StranaComponent,
     WaterlevelComponent,
     LoadComponent,

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ThreeSurfaceService } from './three-surface.service';
+import { NodeService } from './node.service';
 
-describe('ThreeSurfaceService', () => {
-  let service: ThreeSurfaceService;
+describe('NodeService', () => {
+  let service: NodeService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ThreeSurfaceService);
+    service = TestBed.inject(NodeService);
   });
 
   it('should be created', () => {
