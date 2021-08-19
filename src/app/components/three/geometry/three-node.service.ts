@@ -40,7 +40,7 @@ export class ThreeNodeService {
     this.currentIndex = null;
 
     this.objVisible = true;
-    this.txtVisible = false;
+    this.txtVisible = true;
 
     // gui
     this.scale = 100;
@@ -92,7 +92,7 @@ export class ThreeNodeService {
     for (const key of jsonKeys) {
       // 既に存在しているか確認する
       const item = this.nodeList.children.find((target) => {
-        return target.name === key;
+        return target.name === 'node' + key;
       });
       if (item !== undefined) {
         // すでに同じ名前の要素が存在している場合座標の更新
@@ -108,6 +108,7 @@ export class ThreeNodeService {
         mesh.name = 'node' + key;
         mesh.position.x = jsonData[key].x;
         mesh.position.y = jsonData[key].y;
+        mesh.scale.set(0.3, 0.3, 0.3);
 
         this.nodeList.children.push(mesh);
         this.nodeList.add(mesh);
@@ -123,12 +124,13 @@ export class ThreeNodeService {
         label.name = 'font';
 
         label.visible = this.txtVisible;
+        //label.visible = true;
         mesh.add(label);
       }
     }
     // サイズを調整する
-    // this.setBaseScale();
-    // this.onResize();
+    //this.setBaseScale();
+    //this.onResize();
 
     return jsonData;
   }

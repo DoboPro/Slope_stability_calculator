@@ -42,7 +42,7 @@ export class SoilComponent implements OnInit {
     // three.js にモードの変更を通知する
     // this.three.ChangeMode("node");
 
-    // this.three.ChangeMode("strana_names");
+    this.three.ChangeMode("soil");
     // this.three.ChangePage(1);
   }
 
@@ -101,7 +101,11 @@ export class SoilComponent implements OnInit {
       this.three.ChangePage(caseNo);
     },
     change: (evt, ui) => {
-    
+      let target: any = null;
+      for (let i = 0; i < ui.updateList.length; i++) {
+        target = ui.updateList[i];
+      }
+      this.three.changeData("soil", target.rowIndx + 1)
     }
   };
 

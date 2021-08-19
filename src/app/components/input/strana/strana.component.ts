@@ -21,7 +21,7 @@ export class StranaComponent implements OnInit {
   private page = 1;
 
   private columnHeaders = [
-    { title: "節点番号", dataType: "float", format: "#.000", dataIndx: "nodeNum", sortable: false, width: 105 },
+    { title: "節点番号", dataType: "integer", dataIndx: "nodeNum", sortable: false, width: 105 },
     { title: "X", dataType: "float", format: "#.000", dataIndx: "X", sortable: false, width: 105, editable: false, style: { "background": "#dae6f0" } },
     { title: "Y", dataType: "float", format: "#.000", dataIndx: "y", sortable: false, width: 105, editable: false, style: { "background": "#dae6f0" } },
   ];

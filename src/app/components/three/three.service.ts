@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { StranaService } from '../input/strana/strana.service';
 import { NodeService } from '../input/node/node.service';
 import { ThreeLoadService } from './geometry/three-load.service';
-import { ThreeStranaService } from './geometry/three-strana.service';
 import { ThreeNodeService } from './geometry/three-node.service';
+import { ThreeSoilService } from './geometry/three-soil.service';
+import { ThreeStranaService } from './geometry/three-strana.service';
 import { ThreeWaterlevelService } from './geometry/three-waterlevel.service';
 import { SceneService } from './scene.service';
 
@@ -17,6 +18,7 @@ export class ThreeService {
 
   constructor(private scene: SceneService,
     private node: ThreeNodeService,
+    private soil: ThreeSoilService,
     private strana: ThreeStranaService,
     private waterlevel: ThreeWaterlevelService,
     private load: ThreeLoadService) { }
@@ -48,6 +50,7 @@ export class ThreeService {
         this.node.changeNode(
           this.node.changeData());
         break;
+      
 
       //   case "waterlevel":
       //     this.waterlevel.changeData();
@@ -57,9 +60,14 @@ export class ThreeService {
       //     this.load.changeData();
       //     break;
 
-      //     case "soil":
-      //       // this.load.selectChange(index);
-      //       break;
+      case "soil":
+        this.soil.changeCase(index);
+        break;
+
+      case "strana":
+        this.strana.changeData(index);
+        break;
+
       default:
         // 何御しない
         return;
@@ -111,7 +119,7 @@ export class ThreeService {
 
 
       case "soil":
-        this.strana.changeCase(currentPage);
+        this.soil.changeCase(currentPage);
         break;
 
 
@@ -120,6 +128,44 @@ export class ThreeService {
         // 再描画
         this.scene.render();
     }
+  }
+
+  //////////////////////////////////////////////////////
+  // 編集モードの変更通知を処理する
+  public ChangeMode(ModeName: string): void {
+    if (this.mode === ModeName) {
+      return;
+    }
+
+    if (ModeName === "nodes") {
+      //this.node.visibleChange(true, true, true);
+      //this.soil.visibleChange(true, false, false);
+      //this.strana.visibleChange(false);
+    }
+
+    if (ModeName === "soil") {
+      //this.node.visibleChange(true, false, false);
+      this.soil.visibleChange(true, true);
+      //this.strana.visibleChange(false);
+    }
+
+    if (ModeName === "strana") {
+      //this.node.visibleChange(true, false, false);
+      //this.soil.visibleChange(true, true, false);
+      //this.strana.visibleChange(false);
+    }
+
+    /* if (ModeName === "joints") {
+      this.node.visibleChange(true, false, false);
+      this.member.visibleChange(true, true, false);
+      this.fixNode.visibleChange(false);
+    } */
+
+    this.mode = ModeName;
+    this.currentIndex = -1;
+
+    // 再描画
+    this.scene.render();
   }
 
   //////////////////////////////////////////////////////

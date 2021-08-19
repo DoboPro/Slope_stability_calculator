@@ -1,6 +1,6 @@
+import { templateJitUrl } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { SceneService } from '../../three/scene.service';
-// import { DataHelperModule } from 'src/app/providers/data-helper.module';
 
 
 @Injectable({
@@ -67,13 +67,10 @@ export class StranaService {
     // 対象行が無かった時に処理
     if (result === undefined) {
       result = {
-        id: typNo,
-        name: "",
-        v_weight: "",
-        viscosity: "",
-        w_viscosity: "",
-        friction: "",
-        w_friction: ""
+        row: row,
+        nodeNum : "",
+
+
       };
       target.push(result);
       this.strana[typNo] = target;
@@ -140,6 +137,99 @@ export class StranaService {
     
   //   // this.strana[index] = strana_load;
   // }
+
+  public getStranaJson(empty: number = null, targetCase: string = "") {
+    const strana = {}
+
+    for (const id of Object.keys(this.strana)) {
+      // ケースの指定がある場合、カレントケース以外は無視する
+      if (targetCase.length > 0 && id !== targetCase) {
+        continue;
+      }
+
+      /* const load1: any[] = this.load[load_id];
+      if (load1.length === 0) {
+        continue;
+      } */
+
+      const tmp_strana = new Array();
+      const target = this.strana[id];
+      for (const key of Object.keys(target)){
+        const item = target[key];
+        const row = item.row;
+        const nodeNum = item.nodeNum;
+
+        const tmp = {
+          row: row,
+          nodeNum : nodeNum,
+        }
+
+        tmp_strana[key] = tmp;
+      }
+
+      strana[id] = tmp_strana;
+      /* if (empty === null) {
+        for (let j = 0; j < load1.length; j++) {
+          const row = load1[j];
+          const m1 = this.helper.toNumber(row["m1"]);
+          const m2 = this.helper.toNumber(row["m2"]);
+          const direction: string = row["direction"];
+          const mark = this.helper.toNumber(row["mark"]);
+          const L1 = this.helper.toNumber(row["L1"]);
+          const L2 = this.helper.toNumber(row["L2"]);
+          const P1 = this.helper.toNumber(row["P1"]);
+          const P2 = this.helper.toNumber(row["P2"]);
+
+          if (
+            (m1 != null || m2 != null) &&
+            mark != null && //&& direction != ''
+            (L1 != null || L2 != null || P1 != null || P2 != null)
+          ) {
+            const tmp = {
+              m1: row.m1,
+              m2: row.m2,
+              direction: row.direction,
+              mark: row.mark,
+              L1: row.L1,
+              L2: row.L2,
+              P1: P1,
+              P2: P2,
+            };
+
+            tmp["row"] = row.row;
+
+            tmp_member.push(tmp);
+          }
+        }
+      } else {
+        // 計算用のデータ作成
+
+        const load2: any[] = this.convertMemberLoads(load1);
+
+        for (let j = 0; j < load2.length; j++) {
+          const row = load2[j];
+
+          const tmp = {
+            m: row["m1"],
+            direction: row["direction"],
+            mark: row["mark"],
+            L1: this.helper.toNumber(row["L1"], 3),
+            L2: this.helper.toNumber(row["L2"], 3),
+            P1: this.helper.toNumber(row["P1"], 2),
+            P2: this.helper.toNumber(row["P2"], 2),
+          };
+
+          tmp["row"] = row.row;
+
+          tmp_member.push(tmp);
+        }
+      }
+      if (tmp_member.length > 0) {
+        load_member[load_id] = tmp_member;
+      }*/
+    } 
+    return strana;
+  }
 
 }
 
