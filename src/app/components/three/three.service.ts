@@ -50,16 +50,7 @@ export class ThreeService {
         this.node.changeNode(
           this.node.changeData());
         break;
-      
-
-      //   case "waterlevel":
-      //     this.waterlevel.changeData();
-      //     break;
-
-      //   case "load":
-      //     this.load.changeData();
-      //     break;
-
+        
       case "soil":
         this.soil.changeCase(index);
         break;
@@ -67,6 +58,16 @@ export class ThreeService {
       case "strana":
         this.strana.changeData(index);
         break;
+      
+
+      case "waterlevel":
+        this.waterlevel.changeData();
+        break;
+
+      //   case "load":
+      //     this.load.changeData();
+      //     break;
+
 
       default:
         // 何御しない

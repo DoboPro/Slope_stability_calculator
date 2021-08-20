@@ -40,7 +40,7 @@ export class ThreeNodeService {
     this.currentIndex = null;
 
     this.objVisible = true;
-    this.txtVisible = true;
+    this.txtVisible = false;
 
     // gui
     this.scale = 100;
@@ -111,7 +111,7 @@ export class ThreeNodeService {
         mesh.scale.set(0.3, 0.3, 0.3);
 
         this.nodeList.children.push(mesh);
-        this.nodeList.add(mesh);
+        //this.nodeList.add(mesh);
         // this.scene.add(this.nodeList);
 
         // 文字をシーンに追加
@@ -124,7 +124,6 @@ export class ThreeNodeService {
         label.name = 'font';
 
         label.visible = this.txtVisible;
-        //label.visible = true;
         mesh.add(label);
       }
     }
