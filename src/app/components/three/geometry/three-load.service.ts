@@ -16,6 +16,9 @@ export class ThreeLoadService {
   public maxDistance: number;
   public minDistance: number;
 
+  
+  private newNodeData: any;    // 変更された 節点データ
+
   private loadList: THREE.Object3D;
   private selectionItem: THREE.Object3D; // 選択中のアイテム
   public center: any; // すべての点の重心位置
@@ -128,6 +131,11 @@ export class ThreeLoadService {
 
     return jsonData;
   }
+
+    // 節点の入力が変更された場合 新しい入力データを保持しておく
+    public changeNode(jsonData): void {
+      this.newNodeData = jsonData;
+    }
 
   // データをクリアする
   public ClearData(): void {

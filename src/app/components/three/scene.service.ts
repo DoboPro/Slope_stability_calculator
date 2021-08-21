@@ -1,23 +1,26 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
-import { OrbitControls } from '@three-ts/orbit-controls';
+import { ThreeComponent } from './three.component';
 import { GUI } from './libs/dat.gui.module.js';
+import { OrbitControls } from './libs/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from './libs/CSS2DRenderer.js';
+import { SafeHtml } from '@angular/platform-browser';
+import { DataHelperModule } from '../../providers/data-helper.module';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SceneService {
+
   // シーン
   private scene: THREE.Scene;
-  public onFlg: boolean = false;
 
   // レンダラー
-  private renderer!: THREE.WebGLRenderer;
+  private renderer: THREE.WebGLRenderer;
   private labelRenderer: CSS2DRenderer;
 
   // カメラ
-  private camera!: THREE.OrthographicCamera;
+  private camera: THREE.OrthographicCamera;
   private aspectRatio: number;
   private Width: number;
   private Height: number;
@@ -46,19 +49,25 @@ export class SceneService {
     };
   }
 
-  public OnInit(
-    aspectRatio: number,
+
+
+  public OnInit(aspectRatio: number,
     canvasElement: HTMLCanvasElement,
     deviceRatio: number,
     Width: number,
-    Height: number
-  ): void {
+    Height: number): void {
     // カメラ
+    this.aspectRatio = aspectRatio;
+    this.Width = Width;
+    this.Height = Height
     this.createCamera(Width, Height);
     // 環境光源
     this.add(new THREE.AmbientLight(0xf0f0f0));
     // レンダラー
-    this.createRender(canvasElement, deviceRatio, Width, Height);
+    this.createRender(canvasElement,
+      deviceRatio,
+      Width,
+      Height);
     // コントロール
     this.addControls();
 
@@ -79,44 +88,74 @@ export class SceneService {
 
   // 床面を生成する
   private createHelper() {
+    this.axisHelper = new THREE.AxesHelper(200);
+    this.scene.add(this.axisHelper);
+
     this.GridHelper = new THREE.GridHelper(200, 20);
     this.GridHelper.geometry.rotateX(Math.PI / 2);
-    this.scene.add(this.GridHelper);
     this.GridHelper.material['opacity'] = 0.2;
     this.GridHelper.material['transparent'] = true;
     this.scene.add(this.GridHelper);
+
   }
 
   // コントロール
   public addControls() {
-    const controls = new OrbitControls(this.camera, this.renderer.domElement);
-    controls.enableRotate = false;
+    const controls = new OrbitControls(this.camera, this.labelRenderer.domElement);
+    controls.damping = 0.2;
     controls.addEventListener('change', this.render);
+    controls.enableRotate = false;
+  }
+
+  // 物体とマウスの交差判定に用いるレイキャスト
+  public getRaycaster(mouse: THREE.Vector2): THREE.Raycaster {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, this.camera);
+    return raycaster;
   }
 
   // カメラの初期化
-  public createCamera(Width: number = null, Height: number = null) {
+  public createCamera(
+    aspectRatio :number = null,
+    Width: number = null, Height: number = null) {
+  
+    aspectRatio = (aspectRatio === null) ? this.aspectRatio : aspectRatio;
+    Width = (Width === null) ? this.Width : Width;
+    Height = (Height === null) ? this.Height : Height;
+    const target = this.scene.getObjectByName('camera');
+    if (target !== undefined) {
+      this.scene.remove(this.camera);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     this.camera = new THREE.OrthographicCamera(
-      -Width / 30,
-      Width / 30,
-      Height / 30,
-      -Height / 30,
+      -Width /10,Width /   10,
+      Height /10,-Height / 10,
       0.1,
       21
     );
-
     this.camera.position.set(0, 0, 10);
     this.camera.name = 'camera';
     this.scene.add(this.camera);
   }
 
+
   // レンダラーを初期化する
-  public createRender(
-    canvasElement: HTMLCanvasElement,
+  public createRender( canvasElement: HTMLCanvasElement,
     deviceRatio: number,
     Width: number,
-    Height: number
-  ): void {
+    Height: number ): void {
     this.renderer = new THREE.WebGLRenderer({
       preserveDrawingBuffer: true,
       canvas: canvasElement,
@@ -127,15 +166,30 @@ export class SceneService {
     this.renderer.setSize(Width, Height);
     this.renderer.shadowMap.enabled = true;
 
+
     this.labelRenderer = new CSS2DRenderer();
     this.labelRenderer.setSize(Width, Height);
     this.labelRenderer.domElement.style.position = 'absolute';
   }
 
+  public labelRendererDomElement(): Node {
+    return this.labelRenderer.domElement;
+  }
+
   // リサイズ
-  public onResize(deviceRatio: number, Width: number, Height: number): void {
+  public onResize(deviceRatio: number,
+     Width: number, 
+     Height: number): void {
+
+    //  if('aspect' in this.camera) { this.camera['aspect'] = deviceRatio; }
+    if ('left' in this.camera) { this.camera['left'] = -Width / 2; }
+    if ('right' in this.camera) { this.camera['right'] = Width / 2; }
+    if ('top' in this.camera) { this.camera['top'] = Height / 2; }
+    if ('bottom' in this.camera) { this.camera['bottom'] = -Height / 2; }
+
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(Width, Height);
+    this.labelRenderer.setSize(Width, Height);
     this.render();
   }
 
@@ -181,19 +235,9 @@ export class SceneService {
       camera: {
         x: this.camera.position.x,
         y: this.camera.position.y,
+        z: this.camera.position.z,
       },
     };
-  }
-
-  public RendererDomElement(): Node {
-    return this.renderer.domElement;
-  }
-
-  // 物体とマウスの交差判定に用いるレイキャスト
-  public getRaycaster(mouse: THREE.Vector2): THREE.Raycaster {
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(mouse, this.camera);
-    return raycaster;
   }
 
   // 視点を読み込む
@@ -203,10 +247,16 @@ export class SceneService {
     }
     const setting: any = jsonData['three'];
     const x: number = this.toNumber(setting.camera.x);
-    if (x !== null) {
+    if (x !== null ){
       const y: number = this.toNumber(setting.camera.y);
-    }
+      if (y !== null ){
+        const z: number = this.toNumber(setting.camera.z);
+        if (z !== null ){
+          this.camera.position.set(x, y, z);
+    }}}
+
   }
+
 
   // 文字列string を数値にする
   public toNumber(num: string, digit: number = null): number {
