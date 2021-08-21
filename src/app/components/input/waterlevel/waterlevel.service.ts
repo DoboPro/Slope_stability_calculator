@@ -78,6 +78,27 @@ export class WaterlevelService {
     };
   }
 
+  public getWaterlevelJson(empty: number = null ): object {
+
+    const jsonData: object = {};
+
+    for (const row of this.waterlevel) {
+
+      const item = this.convertNumber(row);
+      if (item.x == null && item.y == null) {
+        continue;
+      }
+
+      const key: string = row.id;
+      jsonData[key] = {
+        x: (item.x == null) ? empty : item.x,
+        y: (item.y == null) ? empty : item.y,
+      };
+    }
+    return jsonData;
+  }
+
+
   // 文字列string を数値にする
   public toNumber(num: string): number {
     let result: any;

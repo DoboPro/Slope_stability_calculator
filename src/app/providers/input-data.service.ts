@@ -52,10 +52,24 @@ export class InputDataService {
     }
 
     const strana: {} = this.strana.getStranaJson(empty);
-    if (Object.keys(node).length > 0) {
-      jsonData['strana'] = node;
+    if (Object.keys(strana).length > 0) {
+      jsonData['strana'] = strana;
     } else if(empty === 0){
       jsonData['strana'] = {};
+    }
+
+    const waterlevel: {} = this.waterlevel.getWaterlevelJson(empty);
+    if (Object.keys(waterlevel).length > 0) {
+      jsonData['waterlevel'] = waterlevel;
+    } else if(empty === 0){
+      jsonData['waterlevel'] = {};
+    }
+
+    const load: {} = this.load.getloadJson(empty);
+    if (Object.keys(load).length > 0) {
+      jsonData['load'] = load;
+    } else if(empty === 0){
+      jsonData['load'] = {};
     }
 
 

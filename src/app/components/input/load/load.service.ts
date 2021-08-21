@@ -25,7 +25,7 @@ export class LoadService {
     }
     // 対象データが無かった時に処理
     if (result == null) {
-      result = { id: '', 始点x: '', 終点x: '', 荷重量: '' };
+      result = { id: index, x_s: '',x_d: '', loadAmount: '' };
       this.load.push(result);
     }
     return result;
@@ -64,14 +64,15 @@ export class LoadService {
 
     for (const row of this.load) {
       const item = this.convertNumber(row);
-      if (item.x == null && item.y == null) {
+      if (item.x_s == null && item.x_d == null && item.loadAmount == null) {
         continue;
       }
 
       const key: string = row.id;
       jsonData[key] = {
-        x: item.x == null ? empty : item.x,
-        y: item.y == null ? empty : item.y,
+        x_s: item.x_s == null ? empty : item.x_s,
+        x_d: item.x_d == null ? empty : item.x_d,
+        loadAmount: item.loadAmount == null ? empty : item.loadAmount
       };
     }
     return jsonData;

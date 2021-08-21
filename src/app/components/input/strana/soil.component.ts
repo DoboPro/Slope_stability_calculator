@@ -20,9 +20,9 @@ export class SoilComponent implements OnInit {
 
   private columnHeaders = [
     { title: "地層名", dataType: "string", dataIndx: "name", sortable: false, width: 250 },
-    { title: "γ", dataType: "float", format: "#.0", dataIndx: "v_weight", sortable: false, width: 50 },
-    { title: "c", dataType: "float", format: "#.0", dataIndx: "viscosity", sortable: false, width: 50 },
-    { title: "φ", dataType: "float", format: "#.0", dataIndx: "friction", sortable: false, width: 50 },
+    { title: "γ", dataType: "float", format: "#.0", dataIndx: "gamma", sortable: false, width: 50 },
+    { title: "c", dataType: "float", format: "#.0", dataIndx: "cohesion", sortable: false, width: 50 },
+    { title: "φ", dataType: "float", format: "#.0", dataIndx: "fai", sortable: false, width: 50 },
   ];
 
   private ROWS_COUNT = 15;

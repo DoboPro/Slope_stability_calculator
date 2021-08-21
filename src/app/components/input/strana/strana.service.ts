@@ -36,11 +36,9 @@ export class StranaService {
       result = {
         id: caseNo,
         name: "",
-        v_weight: "",
-        viscosity: "",
-        w_viscosity: "",
-        friction: "",
-        w_friction: ""
+        gamma: "",
+        cohesion: "",
+        fai: ""
       };
       this.soil.push(result);
     }
@@ -146,20 +144,30 @@ export class StranaService {
 
     const organization = this.getOrganizationJson(empty);
 
-    for (const soil_id of Object.keys(organization)) {
-      let jsonData = {};
-      if (soil_id in soil) {
-        jsonData = soil[soil_id];
-      } else {
-        jsonData = { gammna: 18, cohesion: 10, fai:30 };
+    for (const soil_id of Object.keys(soil)) {
+      const jsonData = soil[soil_id];
+      if (soil_id in organization) {
+        jsonData["organization"] = organization[soil_id];
       }
-      jsonData["organization"] = organization[soil_id];
-      // if (soil_id in organization) {
-      //   jsonData["organization"] = load_member[load_id];
-      //   delete load_member[load_id];
-      // }
       result[soil_id] = jsonData;
+      delete soil[soil_id];
     }
+
+    // for (const soil_id of Object.keys(organization)) {
+    //   let jsonData = {};
+    //   if (soil_id in soil) {
+    //     jsonData = soil[soil_id];
+    //   } else {
+    //     jsonData = { gammna: 18, cohesion: 10, fai: 30 };
+    //   }
+    //   jsonData["organization"] = organization[soil_id];
+    //   // if (soil_id in organization) {
+    //   //   jsonData["organization"] = load_member[load_id];
+    //   //   delete load_member[load_id];
+    //   // }
+    //   result[soil_id] = jsonData;
+    //   delete soil[soil_id];
+    // }
     return result;
   }
 
@@ -229,30 +237,13 @@ export class StranaService {
       }
 
       const tmp_organization = new Array();
-      if (empty === null) {
-        for (let j = 0; j < strana1.length; j++) {
-          const row = strana1[j];
-          const nodeNum = this.toNumber(row["nodeNum"]);
-          if (nodeNum != null) {
-            const tmp = {
-              nodeNum: row.nodeNum
-            };
 
-            tmp["row"] = row.row;
-
-            tmp_organization.push(tmp);
-          }
-        }
-      } else {
-        //　計算用データの作成
-
-        const strana2: any[] = strana1;
-
-        for (let j = 0; j < strana2.length; j++) {
-          const row = strana2[j];
-
+      for (let j = 0; j < strana1.length; j++) {
+        const row = strana1[j];
+        const nodeNum = this.toNumber(row["nodeNum"]);
+        if (nodeNum != null) {
           const tmp = {
-            nodeNum: row["nodeNum"]
+            nodeNum: row.nodeNum
           };
 
           tmp["row"] = row.row;
