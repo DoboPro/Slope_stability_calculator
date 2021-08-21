@@ -31,7 +31,7 @@ export class InputDataService {
     this.clear();
     const jsonData: {} = JSON.parse(inputText);
     this.node.setNodeJson(jsonData);
-    // this.strana.setStranaJson(jsonData);
+    this.strana.setStranaJson(jsonData);
     this.waterlevel.setWaterlevelJson(jsonData);
     this.load.setLoadJson(jsonData);
     this.initialCondition.setInitialConditionJson(jsonData);

@@ -40,6 +40,7 @@ export class LoadService {
     for (const index of Object.keys(json)) {
       const item = this.convertNumber(json[index]);
       const result = {
+        id: index,
         x_s: item.x_s === null ? '' : item.x_s.toFixed(3),
         x_d: item.x_d === null ? '' : item.x_d.toFixed(3),
         loadAmount: item.loadAmount === null ? '' : item.loadAmount.toFixed(3),

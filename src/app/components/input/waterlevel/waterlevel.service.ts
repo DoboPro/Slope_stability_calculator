@@ -62,6 +62,7 @@ export class WaterlevelService {
     for (const index of Object.keys(json)) {
       const item = this.convertNumber(json[index]);
       const result = {
+        id: index,
         x: (item.x === null) ? '' : item.x.toFixed(3),
         y: (item.y === null) ? '' : item.y.toFixed(3)
       };

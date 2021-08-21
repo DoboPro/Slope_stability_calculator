@@ -11,7 +11,6 @@ export class StranaService {
 
   public soil: any[];
   public strana: {};
-  strana_tmp: any;
 
 
 
@@ -68,8 +67,6 @@ export class StranaService {
       result = {
         row: row,
         nodeNum: "",
-
-
       };
       target.push(result);
       this.strana[typNo] = target;
@@ -78,64 +75,52 @@ export class StranaService {
   }
 
 
-  // public setStranaJson(jsonData: any): void {
-  //   if (!("load" in jsonData)) {
-  //     return;
-  //   }
+  public setStranaJson(jsonData: {}): void {
+    if (!("strana" in jsonData)) {
+      return;
+    }
 
-  //   this.clear();
+    this.clear();
 
-  //   const json: any = jsonData["load"];
+    const json: {} = jsonData["strana"];
 
-  //   for (const index of Object.keys(json)) {
-  //     this.strana_tmp = {};
+    for (const index of Object.keys(json)) {
+      const strana_tmp = {};
 
-  //     const item1: any = json[index];
+      const item1: {} = json[index];
 
-  //     const _name: string = "name" in item1 ? item1["name"] : "";
-  //     const _v_weight: string = "v_weight" in item1 ? item1["v_weight"] : "";
-  //     const _viscosity: string =
-  //       "viscosity" in item1 ? item1["viscosity"] : "";
-  //     const _w_viscosity: string = "w_viscosity" in item1 ? item1["w_viscosity"] : "";
-  //     const _friction: string = "friction" in item1 ? item1["friction"] : "";
-  //     const _w_friction: string = "friction" in item1 ? item1["friction"] : "";
+      const _name: string = "name" in item1 ? item1["name"] : "";
+      const _gamma: string = "gamma" in item1 ? item1["gamma"] : "";
+      const _cohesion: string = "cohesion" in item1 ? item1["cohesion"] : "";
+      const _fai: string = "fai" in item1 ? item1["fai"] : "";
 
-  //     this.soil.push({
-  //       id: index,
-  //       name: _name,
-  //       v_weight: _v_weight,
-  //       viscosity: _viscosity,
-  //       w_viscosity: _w_viscosity,
-  //       friction: _friction,
-  //       _w_friction: _w_friction
-  //     });
+      this.soil.push({
+        id: index,
+        name: _name,
+        gamma: _gamma,
+        cohesion: _cohesion,
+        fai: _fai
+      });
 
+      if ("organization" in item1) {
+        const organization_list: any[] = item1["organization"];
+        for (let i = 0; i < organization_list.length; i++) {
+          const item2 = organization_list[i];
 
-  //     const strana: any[] = item1["starana"];
-  //     for (let i = 0; i < strana.length; i++) {
-  //       const item2 = strana[i];
+          const _row: string = "row" in item2 ? item2["row"] : i + 1;
 
-  //       const _row: string = "row" in item2 ? item2["row"] : i + 1;
+          const _nodeNum: string = "nodeNum" in item2 ? item2.nodeNum : "";
 
-  //       const _n: string = "n" in item2 ? item2.n : "";
-  //       let _x: string = "";
-  //       if ("x" in item2) _x = item2.x;
-  //       let _y: string = "";
-  //       if ("y" in item2) _y = item2.y;
-
-  //       this.strana_tmp.push({
-  //         row: _row,
-  //         n: _n,
-  //         x: _x,
-  //         y: _y,
-  //       });
-  //     }
-  //   }
-  //   this.strana.push(this.strana_tmp)
-
-
-  //   // this.strana[index] = strana_load;
-  // }
+          strana_tmp[_row] = {
+            row: _row,
+            nodeNum: _nodeNum
+          };
+        }
+      }
+      this.strana[index] = strana_tmp;
+    }
+    // this.strana[index] = strana_load;
+  }
 
   public getStranaJson(empty: number = null, targetCase: string = "") {
     const result = {}
@@ -209,11 +194,12 @@ export class StranaService {
       const temp = {
         gamma: gamma == null ? empty : gamma,
         cohesion: cohesion == null ? empty : cohesion,
-        fai: fai == null ? empty : fai
+        fai: fai == null ? empty : fai,
+        name : name == null ? empty : name ,
       }
 
-      if (empty == null) {
-        tmp["name"] = name;
+      if (empty === null) {
+        tmp["name"] = name == null ? empty : name;
       }
 
       soil[soil_id] = temp;
