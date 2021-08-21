@@ -3,6 +3,7 @@ import * as THREE from 'three';
 
 import { SceneService } from './scene.service';
 import { ThreeService } from './three.service';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-three',
@@ -12,6 +13,10 @@ import { ThreeService } from './three.service';
 export class ThreeComponent implements AfterViewInit {
 
   @ViewChild('myCanvas', { static: true }) private canvasRef!: ElementRef;
+  @ViewChild('img') img: ElementRef;
+  @ViewChild('screen') screen: ElementRef;
+  @ViewChild('downloadLink') downloadLink: ElementRef;
+
 
 
   constructor(private ngZone: NgZone,
@@ -32,9 +37,9 @@ export class ThreeComponent implements AfterViewInit {
       window.innerHeight - 120);
     this.three.OnInit();
 
-    // const element = this.scene.RendererDomElement();
-    // const div = document.getElementById('myCanvas');        // ボタンを置きたい場所の手前の要素を取得
-    // div.parentNode.insertBefore(element, div.nextSibling);  // ボタンを置きたい場所にaタグを追加
+    const element = this.scene.labelRendererDomElement();
+    const div = document.getElementById('myCanvas');        // ボタンを置きたい場所の手前の要素を取得
+    div.parentNode.insertBefore(element, div.nextSibling);  // ボタンを置きたい場所にaタグを追加
 
     // レンダリングする
     this.animate();
@@ -95,5 +100,25 @@ export class ThreeComponent implements AfterViewInit {
     }
     return this.canvas.clientWidth / this.canvas.clientHeight;
   }
+
+  
+  public downloadImage(){
+    // html2canvas(this.screen.nativeElement).then(canvas => {
+    html2canvas(this.canvasRef.nativeElement).then(canvas => {
+      // this.scene.render();
+      this.img.nativeElement.src = canvas.toDataURL();
+      this.downloadLink.nativeElement.href = canvas.toDataURL('image/png');
+
+      const date = new Date();
+      const filename = date.getFullYear()  + "_" +
+				(date.getMonth() + 1)  + "_" +  date.getDate() + "_" +
+        date.getHours() + date.getMinutes() + date.getSeconds()  + ".png";
+
+        this.downloadLink.nativeElement.download = filename;
+      this.downloadLink.nativeElement.click();
+    });
+  }
+
+  
 
 }

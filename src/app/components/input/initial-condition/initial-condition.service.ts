@@ -54,31 +54,31 @@ export class InitialConditionService {
   //   return result;
   // }
 
-  // public getInitialConditionColums(index: number): any {
-  //   let result: any = null;
-  //   for (const tmp of this.initialCondition) {
-  //     if (tmp.id.toString() === index.toString()) {
-  //       result = tmp;
-  //       break;
-  //     }
-  //   }
-  //   // 対象データが無かった時に処理
-  //   if (result == null) {
-  //     result = {
-  //       seismic: '',
-  //       dWidth: '',
-  //       floatP: '',
-  //       waterDif: '',
-  //       diagonal: '',
-  //       calcShow: '',
-  //       x0: '',
-  //       y0: '',
-  //       r0: '',
-  //     };
-  //     this.initialCondition.push(result);
-  //   }
-  //   return result;
-  // }
+  public getInitialConditionColums(index: number): any {
+    let result: any = null;
+    for (const tmp of this.initialCondition) {
+      if (tmp.id.toString() === index.toString()) {
+        result = tmp;
+        break;
+      }
+    }
+    // 対象データが無かった時に処理
+    if (result == null) {
+      result = {
+        seismic: '',
+        dWidth: '',
+        floatP: '',
+        waterDif: '',
+        diagonal: '',
+        calcShow: '',
+        x0: '',
+        y0: '',
+        r0: '',
+      };
+      this.initialCondition.push(result);
+    }
+    return result;
+  }
 
   // ファイルを読み込む
   public setInitialConditionJson(jsonData: any): void {

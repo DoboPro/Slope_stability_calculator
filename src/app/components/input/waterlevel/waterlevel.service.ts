@@ -32,6 +32,26 @@ export class WaterlevelService {
     return result;
   }
 
+  public getWaterLevelJson(empty: number = null ): object {
+
+    const jsonData: object = {};
+
+    for (const row of this.waterlevel) {
+
+      const item = this.convertNumber(row);
+      if (item.x == null && item.y == null) {
+        continue;
+      }
+
+      const key: string = row.id;
+      jsonData[key] = {
+        x: (item.x == null) ? empty : item.x,
+        y: (item.y == null) ? empty : item.y,
+      };
+    }
+    return jsonData;
+  }
+
 
   // ファイルを読み込む
   public setWaterlevelJson(jsonData: any): void {

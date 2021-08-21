@@ -87,7 +87,7 @@ export class WaterlevelComponent implements OnInit {
       const range = ui.selection.iCells.ranges;
       const row = range[0].r1 + 1;
       const column = range[0].c1;
-      this.three.selectChange('waterlevel', row, column);
+      //this.three.selectChange('waterlevel', row, column);
     },
     change: (evt, ui) => {
       this.three.changeData('waterlevel');
