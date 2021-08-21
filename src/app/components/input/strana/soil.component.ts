@@ -22,9 +22,7 @@ export class SoilComponent implements OnInit {
     { title: "地層名", dataType: "string", dataIndx: "name", sortable: false, width: 250 },
     { title: "γ", dataType: "float", format: "#.0", dataIndx: "v_weight", sortable: false, width: 50 },
     { title: "c", dataType: "float", format: "#.0", dataIndx: "viscosity", sortable: false, width: 50 },
-    { title: "c'", dataType: "float", format: "#.0", dataIndx: "w_viscosity", sortable: false, width: 50 },
     { title: "φ", dataType: "float", format: "#.0", dataIndx: "friction", sortable: false, width: 50 },
-    { title: "φ'", dataType: "float", format: "#.0", dataIndx: "w_friction", sortable: false, width: 50 }
   ];
 
   private ROWS_COUNT = 15;

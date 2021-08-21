@@ -12,7 +12,7 @@ export class StranaService {
   public strana: any[];
   strana_tmp: any;
 
-  
+
 
   constructor(
   ) {
@@ -68,7 +68,7 @@ export class StranaService {
     if (result === undefined) {
       result = {
         row: row,
-        nodeNum : "",
+        nodeNum: "",
 
 
       };
@@ -134,12 +134,14 @@ export class StranaService {
   //   }
   //   this.strana.push(this.strana_tmp)
 
-    
+
   //   // this.strana[index] = strana_load;
   // }
 
   public getStranaJson(empty: number = null, targetCase: string = "") {
     const strana = {}
+
+    const soil = this.getSoilJson(empty);
 
     for (const id of Object.keys(this.strana)) {
       // ケースの指定がある場合、カレントケース以外は無視する
@@ -154,14 +156,14 @@ export class StranaService {
 
       const tmp_strana = new Array();
       const target = this.strana[id];
-      for (const key of Object.keys(target)){
+      for (const key of Object.keys(target)) {
         const item = target[key];
         const row = item.row;
         const nodeNum = item.nodeNum;
 
         const tmp = {
           row: row,
-          nodeNum : nodeNum,
+          nodeNum: nodeNum,
         }
 
         tmp_strana[key] = tmp;
@@ -227,8 +229,48 @@ export class StranaService {
       if (tmp_member.length > 0) {
         load_member[load_id] = tmp_member;
       }*/
-    } 
+    }
     return strana;
+  }
+
+  //　土質情報
+  public getSoilJson(empty: number = null, targetCase: string = ""): any {
+    const soil = {}
+
+    for (let i = 0; i < this.soil.length; i++) {
+      const tmp = this.soil[i];
+      const key: string = tmp["id"];
+
+      //ケースの指定がある場合、カレントケース以外は無視する
+      if(targetCase.length > 0 && key !== targetCase){
+        continue;
+      }
+
+      const id = this.toNumber(key);
+      if (id == null){
+        continue;
+      }
+
+      const name = this.toNumber(tmp["name"]);
+
+    }
+  }
+
+  public toNumber(num: string): number {
+    let result : any;
+    try {
+      const tmp: string = num.toString().trim();
+      if (tmp.length > 0) {
+        result = ((n: number) => (isNaN(n) ? null : n))(+tmp);
+      }
+    } catch {
+      result = null;
+    }
+    // if (digit != null) {
+    //   const dig: number = 10 ** digit;
+    //   result = Math.round(result * dig) / dig;
+    // }
+    return result;
   }
 
 }
