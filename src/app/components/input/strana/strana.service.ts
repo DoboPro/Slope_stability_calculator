@@ -1,5 +1,6 @@
 import { templateJitUrl } from '@angular/compiler';
 import { Injectable } from '@angular/core';
+import { rawListeners } from 'process';
 import { SceneService } from '../../three/scene.service';
 
 
@@ -9,7 +10,7 @@ import { SceneService } from '../../three/scene.service';
 export class StranaService {
 
   public soil: any[];
-  public strana: any[];
+  public strana: {};
   strana_tmp: any;
 
 
@@ -139,98 +140,27 @@ export class StranaService {
   // }
 
   public getStranaJson(empty: number = null, targetCase: string = "") {
-    const strana = {}
+    const result = {}
 
     const soil = this.getSoilJson(empty);
 
-    for (const id of Object.keys(this.strana)) {
-      // ケースの指定がある場合、カレントケース以外は無視する
-      if (targetCase.length > 0 && id !== targetCase) {
-        continue;
-      }
+    const organization = this.getOrganizationJson(empty);
 
-      /* const load1: any[] = this.load[load_id];
-      if (load1.length === 0) {
-        continue;
-      } */
-
-      const tmp_strana = new Array();
-      const target = this.strana[id];
-      for (const key of Object.keys(target)) {
-        const item = target[key];
-        const row = item.row;
-        const nodeNum = item.nodeNum;
-
-        const tmp = {
-          row: row,
-          nodeNum: nodeNum,
-        }
-
-        tmp_strana[key] = tmp;
-      }
-
-      strana[id] = tmp_strana;
-      /* if (empty === null) {
-        for (let j = 0; j < load1.length; j++) {
-          const row = load1[j];
-          const m1 = this.helper.toNumber(row["m1"]);
-          const m2 = this.helper.toNumber(row["m2"]);
-          const direction: string = row["direction"];
-          const mark = this.helper.toNumber(row["mark"]);
-          const L1 = this.helper.toNumber(row["L1"]);
-          const L2 = this.helper.toNumber(row["L2"]);
-          const P1 = this.helper.toNumber(row["P1"]);
-          const P2 = this.helper.toNumber(row["P2"]);
-
-          if (
-            (m1 != null || m2 != null) &&
-            mark != null && //&& direction != ''
-            (L1 != null || L2 != null || P1 != null || P2 != null)
-          ) {
-            const tmp = {
-              m1: row.m1,
-              m2: row.m2,
-              direction: row.direction,
-              mark: row.mark,
-              L1: row.L1,
-              L2: row.L2,
-              P1: P1,
-              P2: P2,
-            };
-
-            tmp["row"] = row.row;
-
-            tmp_member.push(tmp);
-          }
-        }
+    for (const soil_id of Object.keys(organization)) {
+      let jsonData = {};
+      if (soil_id in soil) {
+        jsonData = soil[soil_id];
       } else {
-        // 計算用のデータ作成
-
-        const load2: any[] = this.convertMemberLoads(load1);
-
-        for (let j = 0; j < load2.length; j++) {
-          const row = load2[j];
-
-          const tmp = {
-            m: row["m1"],
-            direction: row["direction"],
-            mark: row["mark"],
-            L1: this.helper.toNumber(row["L1"], 3),
-            L2: this.helper.toNumber(row["L2"], 3),
-            P1: this.helper.toNumber(row["P1"], 2),
-            P2: this.helper.toNumber(row["P2"], 2),
-          };
-
-          tmp["row"] = row.row;
-
-          tmp_member.push(tmp);
-        }
+        jsonData = { gammna: 18, cohesion: 10, fai:30 };
       }
-      if (tmp_member.length > 0) {
-        load_member[load_id] = tmp_member;
-      }*/
+      jsonData["organization"] = organization[soil_id];
+      // if (soil_id in organization) {
+      //   jsonData["organization"] = load_member[load_id];
+      //   delete load_member[load_id];
+      // }
+      result[soil_id] = jsonData;
     }
-    return strana;
+    return result;
   }
 
   //　土質情報
@@ -242,22 +172,104 @@ export class StranaService {
       const key: string = tmp["id"];
 
       //ケースの指定がある場合、カレントケース以外は無視する
-      if(targetCase.length > 0 && key !== targetCase){
+      if (targetCase.length > 0 && key !== targetCase) {
         continue;
       }
 
       const id = this.toNumber(key);
-      if (id == null){
+      if (id == null) {
         continue;
       }
 
-      const name = this.toNumber(tmp["name"]);
+      const name: string = tmp["name"];
+      const gamma = this.toNumber(tmp["gamma"]);
+      const cohesion = this.toNumber(tmp["cohesion"]);
+      const fai = this.toNumber(tmp["fai"]);
+
+
+      if (
+        name === "" &&
+        gamma == null &&
+        cohesion == null &&
+        fai == null
+      ) {
+        continue;
+      }
+
+      const soil_id = (i + 1).toString();
+
+      const temp = {
+        gamma: gamma == null ? empty : gamma,
+        cohesion: cohesion == null ? empty : cohesion,
+        fai: fai == null ? empty : fai
+      }
+
+      if (empty == null) {
+        tmp["name"] = name;
+      }
+
+      soil[soil_id] = temp;
 
     }
+    return soil;
+  }
+
+  public getOrganizationJson(empty: number = null, targetCase: string = ""): any {
+    const organization = {};
+
+    for (const soil_id of Object.keys(this.strana)) {
+      //　ケースの指定がある場合、カレントケース以外は無視する
+      if (targetCase.length > 0 && soil_id !== targetCase) {
+        continue;
+      }
+
+      const strana1: any[] = this.strana[soil_id];
+      if (strana1.length === 0) {
+        continue;
+      }
+
+      const tmp_organization = new Array();
+      if (empty === null) {
+        for (let j = 0; j < strana1.length; j++) {
+          const row = strana1[j];
+          const nodeNum = this.toNumber(row["nodeNum"]);
+          if (nodeNum != null) {
+            const tmp = {
+              nodeNum: row.nodeNum
+            };
+
+            tmp["row"] = row.row;
+
+            tmp_organization.push(tmp);
+          }
+        }
+      } else {
+        //　計算用データの作成
+
+        const strana2: any[] = strana1;
+
+        for (let j = 0; j < strana2.length; j++) {
+          const row = strana2[j];
+
+          const tmp = {
+            nodeNum: row["nodeNum"]
+          };
+
+          tmp["row"] = row.row;
+
+          tmp_organization.push(tmp);
+        }
+      }
+      if (tmp_organization.length > 0) {
+        organization[soil_id] = tmp_organization;
+      }
+    }
+    return organization;
+
   }
 
   public toNumber(num: string): number {
-    let result : any;
+    let result: any;
     try {
       const tmp: string = num.toString().trim();
       if (tmp.length > 0) {

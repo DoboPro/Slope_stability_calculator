@@ -51,6 +51,13 @@ export class InputDataService {
       jsonData['node'] = {};
     }
 
+    const strana: {} = this.strana.getStranaJson(empty);
+    if (Object.keys(node).length > 0) {
+      jsonData['strana'] = node;
+    } else if(empty === 0){
+      jsonData['strana'] = {};
+    }
+
 
     return jsonData;
   }
