@@ -8,6 +8,9 @@ import { ThreeStranaService } from './geometry/three-strana.service';
 import { ThreeWaterlevelService } from './geometry/three-waterlevel.service';
 import { SceneService } from './scene.service';
 
+import * as THREE from "three";
+import { DataHelperModule } from "src/app/providers/data-helper.module";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -36,10 +39,10 @@ export class ThreeService {
   public fileload(): void {
     // ファイルを読み込んだ
     this.node.changeData();
-    // this.load.changeData();
-    // this.waterlevel.changeData();
+    this.load.changeData();
+    this.waterlevel.changeData();
     // this.strana.ResetData();
-    // this.scene.render();
+    this.scene.render();
   }
 
   //////////////////////////////////////////////////////
@@ -47,7 +50,7 @@ export class ThreeService {
   public changeData(mode: string = "", index: number = 0): void {
     switch (mode) {
       case "node":
-        this.node.changeNode(
+        this.load.changeNode(
           this.node.changeData());
         break;
         
@@ -110,6 +113,26 @@ export class ThreeService {
   // this.currentIndex = index;
 
   //////////////////////////////////////////////////////
+  // データをクリアする
+  public ClearData(): void {
+    // 節点データの削除
+    this.node.ClearData();
+    // this.member.ClearData();
+    // this.fixNode.ClearData();
+    // this.fixMember.ClearData();
+    // this.joint.ClearData();
+    // this.panel.ClearData();
+    // this.load.ClearData();
+    // this.disg.ClearData();
+    // this.reac.ClearData();
+    // this.fsec.ClearData();
+
+    // 再描画
+    this.scene.render();
+  }
+
+
+  //////////////////////////////////////////////////////
   // 編集ページの変更通知を処理する
   public ChangePage(currentPage: number): void {
     if (this.currentIndex === currentPage) {
@@ -139,9 +162,9 @@ export class ThreeService {
     }
 
     if (ModeName === "nodes") {
-      //this.node.visibleChange(true, true, true);
-      //this.soil.visibleChange(true, false, false);
-      //this.strana.visibleChange(false);
+      this.node.visibleChange(true, true, true);
+      // this.soil.visibleChange(true, false, false);
+      // this.strana.visibleChange(false);
     }
 
     if (ModeName === "soil") {
