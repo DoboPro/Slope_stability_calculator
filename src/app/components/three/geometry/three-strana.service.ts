@@ -35,7 +35,7 @@ export class ThreeStranaService {
       return;
     }
 
-    const stranaData = this.strana.getStranaJson(0, this.currentIndex);
+    const stranaData = this.strana.getOrganizationJson(0, this.currentIndex);
     this.changeStrana(row, stranaData[this.currentIndex], nodeData)
 
     this.scene.render();
