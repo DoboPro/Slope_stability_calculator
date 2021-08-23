@@ -104,6 +104,7 @@ export class StranaService {
 
       if ("organization" in item1) {
         const organization_list: any[] = item1["organization"];
+        const tmp_strana = new Array();
         for (let i = 0; i < organization_list.length; i++) {
           const item2 = organization_list[i];
 
@@ -111,15 +112,15 @@ export class StranaService {
 
           const _nodeNum: string = "nodeNum" in item2 ? item2.nodeNum : "";
 
-          strana_tmp[_row] = {
+          tmp_strana.push({
             row: _row,
             nodeNum: _nodeNum
-          };
+          })
         }
+
+        this.strana[index] = tmp_strana;
       }
-      this.strana[index] = strana_tmp;
     }
-    // this.strana[index] = strana_load;
   }
 
   public getStranaJson(empty: number = null, targetCase: string = "") {
@@ -195,7 +196,7 @@ export class StranaService {
         gamma: gamma == null ? empty : gamma,
         cohesion: cohesion == null ? empty : cohesion,
         fai: fai == null ? empty : fai,
-        name : name == null ? empty : name ,
+        name: name == null ? empty : name,
       }
 
       if (empty === null) {
