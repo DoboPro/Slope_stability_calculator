@@ -124,7 +124,7 @@ export class StranaService {
   }
 
   public getStranaJson(empty: number = null, targetCase: string = "") {
-    const result = {}
+    const strana = {}
 
     const soil = this.getSoilJson(empty);
 
@@ -135,7 +135,7 @@ export class StranaService {
       if (soil_id in organization) {
         jsonData["organization"] = organization[soil_id];
       }
-      result[soil_id] = jsonData;
+      strana[soil_id] = jsonData;
       delete soil[soil_id];
     }
 
@@ -154,7 +154,7 @@ export class StranaService {
     //   result[soil_id] = jsonData;
     //   delete soil[soil_id];
     // }
-    return result;
+    return strana;
   }
 
   //　土質情報
