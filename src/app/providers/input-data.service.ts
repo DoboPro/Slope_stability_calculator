@@ -31,7 +31,7 @@ export class InputDataService {
     this.clear();
     const jsonData: {} = JSON.parse(inputText);
     this.node.setNodeJson(jsonData);
-    // this.strana.setStranaJson(jsonData);
+    this.strana.setStranaJson(jsonData);
     this.waterlevel.setWaterlevelJson(jsonData);
     this.load.setLoadJson(jsonData);
     this.initialCondition.setInitialConditionJson(jsonData);
@@ -49,6 +49,27 @@ export class InputDataService {
       jsonData['node'] = node;
     } else if(empty === 0){
       jsonData['node'] = {};
+    }
+
+    const strana: {} = this.strana.getStranaJson(empty);
+    if (Object.keys(strana).length > 0) {
+      jsonData['strana'] = strana;
+    } else if(empty === 0){
+      jsonData['strana'] = {};
+    }
+
+    const waterlevel: {} = this.waterlevel.getWaterlevelJson(empty);
+    if (Object.keys(waterlevel).length > 0) {
+      jsonData['waterlevel'] = waterlevel;
+    } else if(empty === 0){
+      jsonData['waterlevel'] = {};
+    }
+
+    const load: {} = this.load.getloadJson(empty);
+    if (Object.keys(load).length > 0) {
+      jsonData['load'] = load;
+    } else if(empty === 0){
+      jsonData['load'] = {};
     }
 
 
