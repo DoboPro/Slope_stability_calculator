@@ -25,10 +25,10 @@ export class ThreeStranaService {
     }
 
   // 表示ケースを変更する
-  public changeData(row: number): void {
+  public changeData(row: number, index: string = this.soil.currentIndex): void {
 
-    // soilとcurrentIndexを共有する
-    this.currentIndex = this.soil.currentIndex;
+    // soilとcurrentIndexを共有する。または、changeNodeから得る
+    this.currentIndex = index;
 
     const nodeData = this.node.getNodeJson(0);
     if (Object.keys(nodeData).length <= 0){
@@ -169,6 +169,19 @@ export class ThreeStranaService {
     delete this.AllStranaList[id];
 
     this.scene.render();
+  }
+
+  // 節点の入力が変更された場合 新しい入力データを保持しておく
+  public changeNode ( jsonData ): void {
+    //this.newNodeData = jsonData;
+    for (const targetID of Object.keys(this.AllStranaList)) {
+      const target = this.AllStranaList[targetID]
+      if (target.ThreeObject.children.length < 1) {
+        continue;
+      }
+      this.changeData(0, targetID)
+    }
+    // console.log(this.AllStranaList);
   }
 
 }

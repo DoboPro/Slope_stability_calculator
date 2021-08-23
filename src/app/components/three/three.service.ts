@@ -50,8 +50,14 @@ export class ThreeService {
   public changeData(mode: string = "", index: number = 0): void {
     switch (mode) {
       case "node":
-        this.load.changeNode(
-          this.node.changeData());
+        /* this.strana.changeNode(
+          this.node.changeData()
+        ); */
+        const a = this.node.changeData();
+        this.strana.changeNode(a);
+        /*this.load.changeNode(
+          this.node.changeData()
+        );*/
         break;
         
       case "soil":
