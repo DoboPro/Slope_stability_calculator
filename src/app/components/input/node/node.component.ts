@@ -90,6 +90,8 @@ export class NodeComponent implements OnInit {
        this.three.selectChange('node', row, column);
     },
     change: (evt, ui) => {
+      const row = ui.updateList[0].rowData.id
+      //console.log(row)
       this.three.changeData('node');
     }
   };
