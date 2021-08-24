@@ -11,7 +11,6 @@ import { DataHelperModule } from '../../providers/data-helper.module';
   providedIn: 'root',
 })
 export class SceneService {
-
   // シーン
   private scene: THREE.Scene;
 
@@ -49,25 +48,22 @@ export class SceneService {
     };
   }
 
-
-
-  public OnInit(aspectRatio: number,
+  public OnInit(
+    aspectRatio: number,
     canvasElement: HTMLCanvasElement,
     deviceRatio: number,
     Width: number,
-    Height: number): void {
+    Height: number
+  ): void {
     // カメラ
     this.aspectRatio = aspectRatio;
     this.Width = Width;
-    this.Height = Height
-    this.createCamera(Width, Height);
+    this.Height = Height;
+    this.createCamera(aspectRatio, Width, Height);
     // 環境光源
     this.add(new THREE.AmbientLight(0xf0f0f0));
     // レンダラー
-    this.createRender(canvasElement,
-      deviceRatio,
-      Width,
-      Height);
+    this.createRender(canvasElement, deviceRatio, Width, Height);
     // コントロール
     this.addControls();
 
@@ -96,12 +92,14 @@ export class SceneService {
     this.GridHelper.material['opacity'] = 0.2;
     this.GridHelper.material['transparent'] = true;
     this.scene.add(this.GridHelper);
-
   }
 
   // コントロール
   public addControls() {
-    const controls = new OrbitControls(this.camera, this.labelRenderer.domElement);
+    const controls = new OrbitControls(
+      this.camera,
+      this.labelRenderer.domElement
+    );
     controls.damping = 0.2;
     controls.addEventListener('change', this.render);
     controls.enableRotate = false;
@@ -116,32 +114,23 @@ export class SceneService {
 
   // カメラの初期化
   public createCamera(
-    aspectRatio :number = null,
-    Width: number = null, Height: number = null) {
-  
-    aspectRatio = (aspectRatio === null) ? this.aspectRatio : aspectRatio;
-    Width = (Width === null) ? this.Width : Width;
-    Height = (Height === null) ? this.Height : Height;
+    aspectRatio: number = null,
+    Width: number = null,
+    Height: number = null
+  ) {
+    aspectRatio = aspectRatio === null ? this.aspectRatio : aspectRatio;
+    Width = Width === null ? this.Width : Width;
+    Height = Height === null ? this.Height : Height;
     const target = this.scene.getObjectByName('camera');
     if (target !== undefined) {
       this.scene.remove(this.camera);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     this.camera = new THREE.OrthographicCamera(
-      -Width /10,Width /   10,
-      Height /10,-Height / 10,
+      -Width / 10,
+      Width / 10,
+      Height / 10,
+      -Height / 10,
       0.1,
       21
     );
@@ -150,12 +139,13 @@ export class SceneService {
     this.scene.add(this.camera);
   }
 
-
   // レンダラーを初期化する
-  public createRender( canvasElement: HTMLCanvasElement,
+  public createRender(
+    canvasElement: HTMLCanvasElement,
     deviceRatio: number,
     Width: number,
-    Height: number ): void {
+    Height: number
+  ): void {
     this.renderer = new THREE.WebGLRenderer({
       preserveDrawingBuffer: true,
       canvas: canvasElement,
@@ -165,7 +155,6 @@ export class SceneService {
     this.renderer.setPixelRatio(deviceRatio);
     this.renderer.setSize(Width, Height);
     this.renderer.shadowMap.enabled = true;
-
 
     this.labelRenderer = new CSS2DRenderer();
     this.labelRenderer.setSize(Width, Height);
@@ -177,15 +166,20 @@ export class SceneService {
   }
 
   // リサイズ
-  public onResize(deviceRatio: number,
-     Width: number, 
-     Height: number): void {
-
+  public onResize(deviceRatio: number, Width: number, Height: number): void {
     //  if('aspect' in this.camera) { this.camera['aspect'] = deviceRatio; }
-    if ('left' in this.camera) { this.camera['left'] = -Width / 2; }
-    if ('right' in this.camera) { this.camera['right'] = Width / 2; }
-    if ('top' in this.camera) { this.camera['top'] = Height / 2; }
-    if ('bottom' in this.camera) { this.camera['bottom'] = -Height / 2; }
+    if ('left' in this.camera) {
+      this.camera['left'] = -Width / 2;
+    }
+    if ('right' in this.camera) {
+      this.camera['right'] = Width / 2;
+    }
+    if ('top' in this.camera) {
+      this.camera['top'] = Height / 2;
+    }
+    if ('bottom' in this.camera) {
+      this.camera['bottom'] = -Height / 2;
+    }
 
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(Width, Height);
@@ -247,16 +241,16 @@ export class SceneService {
     }
     const setting: any = jsonData['three'];
     const x: number = this.toNumber(setting.camera.x);
-    if (x !== null ){
+    if (x !== null) {
       const y: number = this.toNumber(setting.camera.y);
-      if (y !== null ){
+      if (y !== null) {
         const z: number = this.toNumber(setting.camera.z);
-        if (z !== null ){
+        if (z !== null) {
           this.camera.position.set(x, y, z);
-    }}}
-
+        }
+      }
+    }
   }
-
 
   // 文字列string を数値にする
   public toNumber(num: string, digit: number = null): number {
