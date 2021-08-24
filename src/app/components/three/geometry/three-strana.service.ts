@@ -6,7 +6,7 @@ import { SceneService } from '../scene.service';
 import { ThreeSoilService } from './three-soil.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThreeStranaService {
   // 全ケースの地層情報を保存
@@ -15,90 +15,68 @@ export class ThreeStranaService {
   private currentIndex_child1: string;
   private currentIndex_child2: string;
 
+  private organizationList;
+
   constructor(
     private node: NodeService,
     private soil: ThreeSoilService,
     private strana: StranaService,
-    private scene: SceneService,) { 
-
-      this.AllStranaList = this.soil.AllStranaList;
-    }
+    private scene: SceneService
+  ) {
+    this.AllStranaList = this.soil.AllStranaList;
+  }
 
   // 表示ケースを変更する
   public changeData(row: number, index: string = this.soil.currentIndex): void {
-
     // soilとcurrentIndexを共有する。または、changeNodeから得る
     this.currentIndex = index;
 
     const nodeData = this.node.getNodeJson(0);
-    if (Object.keys(nodeData).length <= 0){
+    if (Object.keys(nodeData).length <= 0) {
       return;
     }
 
     const stranaData = this.strana.getOrganizationJson(0, this.currentIndex);
-    this.changeStrana(row, stranaData[this.currentIndex], nodeData)
+    this.changeStrana(row, stranaData[this.currentIndex], nodeData);
 
     this.scene.render();
 
     return;
-    const id: string = row.toString();
+  }
 
-    if (this.currentIndex === id) {
-      // 同じなら何もしない
-      return;
-    }
-
-    if (row < 1) {
-      // 非表示にして終わる
-      for (const key of Object.keys(this.AllStranaList)) {
-        const targetLoad = this.AllStranaList[key];
-        const ThreeObject: THREE.Object3D = targetLoad.ThreeObject;
-        ThreeObject.visible = false;
+  public resetData() {
+    this.organizationList = this.strana.getOrganizationJson(0);
+    for (let i = 1; i <= Object.keys(this.organizationList).length; i++) {
+      this.currentIndex = i.toString();
+      let row = Object.keys(this.organizationList[i]).length;
+      this.soil.changeCase(i);
+      for (let j = 1; j <= row; j++) {
+        this.changeData(j, this.currentIndex);
       }
-      this.scene.render();
-      this.currentIndex = id;
-      return;
+      // this.changeData()
     }
-
-    // 初めての荷重ケースが呼び出された場合
-    if (!(id in this.AllStranaList)) {
-      this.addCase(id);
-    }
-
-    // 荷重の表示非表示を切り替える
-    for (const key of Object.keys(this.AllStranaList)) {
-      const targetLoad = this.AllStranaList[key];
-      const ThreeObject: THREE.Object3D = targetLoad.ThreeObject;
-      ThreeObject.visible = key === id ? true : false;
-    }
-
-    // カレントデータをセット
-    this.currentIndex = id;
-
-    this.scene.render();
   }
 
   // ケースを追加する
-  private addCase(id: string): void {
-    const ThreeObject = new THREE.Object3D();
-    ThreeObject.name = id;
-    ThreeObject.visible = false; // ファイルを読んだ時点では、全ケース非表示
-    this.AllStranaList[id] = {
-      ThreeObject,
-      pointLoadList: {},
-      memberLoadList: {},
-      pMax: 0, // 最も大きい集中荷重値
-      mMax: 0, // 最も大きいモーメント
-      wMax: 0, // 最も大きい分布荷重
-      rMax: 0, // 最も大きいねじり分布荷重
-      qMax: 0  // 最も大きい軸方向分布荷重
-    };
+  // private addCase(id: string): void {
+  //   const ThreeObject = new THREE.Object3D();
+  //   ThreeObject.name = id;
+  //   ThreeObject.visible = false; // ファイルを読んだ時点では、全ケース非表示
+  //   this.AllStranaList[id] = {
+  //     ThreeObject,
+  //     pointLoadList: {},
+  //     memberLoadList: {},
+  //     pMax: 0, // 最も大きい集中荷重値
+  //     mMax: 0, // 最も大きいモーメント
+  //     wMax: 0, // 最も大きい分布荷重
+  //     rMax: 0, // 最も大きいねじり分布荷重
+  //     qMax: 0  // 最も大きい軸方向分布荷重
+  //   };
 
-    this.scene.add(ThreeObject); // シーンに追加
-  }
+  //   this.scene.add(ThreeObject); // シーンに追加
+  // }
 
-  private changeStrana(row, stranaData, nodeData){
-    
+  private changeStrana(row, stranaData, nodeData) {
     const ThreeObject = this.AllStranaList[this.currentIndex].ThreeObject;
     if (ThreeObject.children.length >= 1) {
       while (ThreeObject.children.length > 0) {
@@ -118,39 +96,40 @@ export class ThreeStranaService {
       if (point === undefined) {
         continue;
       }
-      verticeList.push(point)
+      verticeList.push(point);
     }
     if (verticeList.length <= 2) return;
     this.create(verticeList, ThreeObject);
   }
 
-
   private create(vertice, ThreeObject) {
     const stranaShape = new THREE.Shape();
 
     //stranaShape.moveTo(vertice[0].x, vertice[0].y)
-    stranaShape.moveTo(0, 0)
+    stranaShape.moveTo(0, 0);
     for (let num = 1; num < vertice.length; num++) {
       //stranaShape.lineTo(vertice[num].x, vertice[num].y)
-      stranaShape.lineTo(vertice[num].x - vertice[0].x, vertice[num].y - vertice[0].y)
+      stranaShape.lineTo(
+        vertice[num].x - vertice[0].x,
+        vertice[num].y - vertice[0].y
+      );
     }
 
-    const geometry = new THREE.ShapeGeometry( stranaShape );
-    let material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const geometry = new THREE.ShapeGeometry(stranaShape);
+    let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     if (this.currentIndex === '2') {
-      material = new THREE.MeshBasicMaterial( { color: 0x00af30 } );
+      material = new THREE.MeshBasicMaterial({ color: 0x00af30 });
     } else if (this.currentIndex === '3') {
-      material = new THREE.MeshBasicMaterial( { color: 0x006f60 } );
+      material = new THREE.MeshBasicMaterial({ color: 0x006f60 });
     } else if (this.currentIndex === '4') {
-      material = new THREE.MeshBasicMaterial( { color: 0x003f90 } );
-    } 
+      material = new THREE.MeshBasicMaterial({ color: 0x003f90 });
+    }
 
-    const mesh = new THREE.Mesh( geometry, material );
-    mesh.position.set(vertice[0].x, vertice[0].y, 0)
-    mesh["memo"] = {position : {x: vertice[0].x, y: vertice[0].y}}
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(vertice[0].x, vertice[0].y, 0);
+    mesh['memo'] = { position: { x: vertice[0].x, y: vertice[0].y } };
 
-    ThreeObject.add(mesh)
-
+    ThreeObject.add(mesh);
   }
 
   // ケースの荷重図を消去する
@@ -172,16 +151,15 @@ export class ThreeStranaService {
   }
 
   // 節点の入力が変更された場合 新しい入力データを保持しておく
-  public changeNode ( jsonData ): void {
+  public changeNode(jsonData): void {
     //this.newNodeData = jsonData;
     for (const targetID of Object.keys(this.AllStranaList)) {
-      const target = this.AllStranaList[targetID]
+      const target = this.AllStranaList[targetID];
       if (target.ThreeObject.children.length < 1) {
         continue;
       }
-      this.changeData(0, targetID)
+      this.changeData(0, targetID);
     }
     // console.log(this.AllStranaList);
   }
-
 }

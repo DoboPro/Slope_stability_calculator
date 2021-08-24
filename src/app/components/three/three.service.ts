@@ -8,23 +8,24 @@ import { ThreeStranaService } from './geometry/three-strana.service';
 import { ThreeWaterlevelService } from './geometry/three-waterlevel.service';
 import { SceneService } from './scene.service';
 
-import * as THREE from "three";
-import { DataHelperModule } from "src/app/providers/data-helper.module";
+import * as THREE from 'three';
+import { DataHelperModule } from 'src/app/providers/data-helper.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThreeService {
-
   private mode: string;
   private currentIndex: number;
 
-  constructor(private scene: SceneService,
+  constructor(
+    private scene: SceneService,
     private node: ThreeNodeService,
     private soil: ThreeSoilService,
     private strana: ThreeStranaService,
     private waterlevel: ThreeWaterlevelService,
-    private load: ThreeLoadService) { }
+    private load: ThreeLoadService
+  ) {}
 
   //////////////////////////////////////////////////////
   // 初期化
@@ -33,7 +34,6 @@ export class ThreeService {
     // this.member.OnInit();
   }
 
-
   //////////////////////////////////////////////////////
   // ファイルを開く処理する
   public fileload(): void {
@@ -41,15 +41,15 @@ export class ThreeService {
     this.node.changeData();
     this.load.changeData();
     this.waterlevel.changeData();
-    // this.strana.ResetData();
+    this.strana.resetData();
     this.scene.render();
   }
 
   //////////////////////////////////////////////////////
   // データの変更通知を処理する
-  public changeData(mode: string = "", index: number = 0): void {
+  public changeData(mode: string = '', index: number = 0): void {
     switch (mode) {
-      case "node":
+      case 'node':
         /* this.strana.changeNode(
           this.node.changeData()
         ); */
@@ -59,24 +59,22 @@ export class ThreeService {
           this.node.changeData()
         );*/
         break;
-        
-      case "soil":
+
+      case 'soil':
         this.soil.changeCase(index);
         break;
 
-      case "strana":
+      case 'strana':
         this.strana.changeData(index);
         break;
-      
 
-      case "waterlevel":
+      case 'waterlevel':
         this.waterlevel.changeData();
         break;
 
       //   case "load":
       //     this.load.changeData();
       //     break;
-
 
       default:
         // 何御しない
@@ -95,20 +93,19 @@ export class ThreeService {
     //console.log("selectChange", mode, index, index_sub);
 
     switch (mode) {
-      case "node":
+      case 'node':
         this.node.selectChange(index);
         break;
 
-      case "waterlevel":
+      case 'waterlevel':
         this.waterlevel.selectChange(index);
         break;
 
-
-      case "load":
+      case 'load':
         this.load.selectChange(index);
         break;
 
-      case "soil":
+      case 'soil':
         // this.load.selectChange(index);
         break;
     }
@@ -137,7 +134,6 @@ export class ThreeService {
     this.scene.render();
   }
 
-
   //////////////////////////////////////////////////////
   // 編集ページの変更通知を処理する
   public ChangePage(currentPage: number): void {
@@ -146,12 +142,9 @@ export class ThreeService {
     }
 
     switch (this.mode) {
-
-
-      case "soil":
+      case 'soil':
         this.soil.changeCase(currentPage);
         break;
-
 
         this.currentIndex = currentPage;
 
@@ -167,19 +160,19 @@ export class ThreeService {
       return;
     }
 
-    if (ModeName === "nodes") {
+    if (ModeName === 'nodes') {
       this.node.visibleChange(true, true, true);
       // this.soil.visibleChange(true, false, false);
       // this.strana.visibleChange(false);
     }
 
-    if (ModeName === "soil") {
+    if (ModeName === 'soil') {
       //this.node.visibleChange(true, false, false);
       this.soil.visibleChange(true, true);
       //this.strana.visibleChange(false);
     }
 
-    if (ModeName === "strana") {
+    if (ModeName === 'strana') {
       //this.node.visibleChange(true, false, false);
       //this.soil.visibleChange(true, true, false);
       //this.strana.visibleChange(false);
@@ -204,11 +197,9 @@ export class ThreeService {
     const raycaster = this.scene.getRaycaster(mouse);
 
     switch (this.mode) {
-      case "node": // 節点データの更新
+      case 'node': // 節点データの更新
         this.node.detectObject(raycaster, action);
         break;
-
-
     }
     // 再描画
     //this.scene.render();

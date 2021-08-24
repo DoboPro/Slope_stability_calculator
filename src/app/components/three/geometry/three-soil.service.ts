@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { SceneService } from '../scene.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThreeSoilService {
   // 全ケースの地層情報を保存
@@ -14,10 +14,10 @@ export class ThreeSoilService {
 
   constructor(
     //private strana: ThreeStranaService,
-    private scene: SceneService,) { 
-
-      this.AllStranaList = {};
-    }
+    private scene: SceneService
+  ) {
+    this.AllStranaList = {};
+  }
 
   // 表示ケースを変更する
   public changeCase(changeCase: number): void {
@@ -69,15 +69,14 @@ export class ThreeSoilService {
       ThreeObject,
       //pointLoadList: {},
       //memberLoadList: {},
-      varticeList: [], // 通過する点のlist
+      verticeList: [], // 通過する点のlist
     };
 
     this.scene.add(ThreeObject); // シーンに追加
   }
-  
+
   // three.service から呼ばれる 表示・非表示の制御
   public visibleChange(flag: boolean, gui: boolean): void {
-
     /* // 非表示にする
     if (flag === false) {
       this.guiDisable();
@@ -101,7 +100,7 @@ export class ThreeSoilService {
 
     // すでに表示されていたら変わらない
     //if (this.isVisible.object === true) {
-      //return;
+    //return;
     //}
 
     // 表示する
@@ -109,7 +108,5 @@ export class ThreeSoilService {
     //this.isVisible.object = true;
   }
 
-  public getAllStranaList(){
-
-  }
+  public getAllStranaList() {}
 }
