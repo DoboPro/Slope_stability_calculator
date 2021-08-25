@@ -160,77 +160,69 @@ export class MenuComponent implements OnInit {
   }
 
   private post_compress(jsonData: {}, modalRef: NgbModalRef) {
-    const url =
-      'https://script.google.com/macros/s/AKfycbxLm1oe7uTzkvvv9Chm6nHQ1jJ1Oo_zAk20YrMJTUpoR4UGMRUb/exec';
-    //     //const url = 'http://127.0.0.1:5000';
+    const url = 'https://asia-northeast1-team-dobopro.cloudfunctions.net/SlopeStabilityCalculator';
 
-    // json string にする
-    const json = JSON.stringify(jsonData, null, 0);
-    console.log(json);
-    // pako を使ってgzip圧縮する
-    const compressed = pako.gzip(json);
-    //btoa() を使ってBase64エンコードする
-    const base64Encoded = btoa(compressed);
-
-    this.http
-      .post(url, base64Encoded, {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Content-Encoding': 'gzip,base64',
-        }),
-        responseType: 'text',
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
       })
-      .subscribe(
-        (response) => {
-          // 通信成功時の処理（成功コールバック）
-          console.log('通信成功!!');
-          try {
-            if (response.includes('error')) {
-              throw response;
-            }
-            // Decode base64 (convert ascii to binary)
-            const strData = atob(response);
-            // Convert binary string to character-number array
-            const charData = strData.split('').map(function (x) {
-              return x.charCodeAt(0);
-            });
-            // Turn number array into byte-array
-            const binData = new Uint8Array(charData);
-            // Pako magic
-            const json = pako.ungzip(binData, { to: 'string' });
+    };
 
-            // テスト ---------------------------------------------
-            // this.saveResult(json);
-            // --------------------------------------------- テスト*/
+    const js: string = JSON.stringify(jsonData,null,0);
+    // const blob = new window.Blob([js], { type: 'text/plain' });
+    // FileSaver.saveAs(blob, 'test.json');
+    console.log(js);
 
-            const jsonData = JSON.parse(json);
-            // サーバーのレスポンスを集計する
-            console.log(jsonData);
-            if ('error' in jsonData) {
-              throw jsonData.error;
-            }
-            // // 解析結果を集計する
-            // this.ResultData.loadResultData(jsonData);
-            // // ユーザーの保有ポイントの表示を更新する
-            // this.user.loadResultData(jsonData);
-            // this.userPoint = this.user.purchase_value.toString();
-          } catch (e) {
-            alert(e);
-          } finally {
-            modalRef.close(); // モーダルダイアログを消す
-          }
-        },
-        (error) => {
-          let messege: string = '通信 ' + error.statusText;
-          if ('_body' in error) {
-            messege += '\n' + error._body;
-          }
-          alert(messege);
-          console.error(error);
-          modalRef.close();
+    this.http.post(
+      'https://asia-northeast1-team-dobopro.cloudfunctions.net/SlopeStabilityCalculator',
+      js,
+      httpOptions
+    ).toPromise()
+      .then((response) => {
+        if ('error' in response) {
+          alert('解析に失敗しました\nエラーメッセージ：' + response['error']);
+          // this.router.navigate(['/condition']);
+        }
+
+        // if ('results' in response) {
+        //   const relist: [] = response['results'];
+        //   for (let i = 0; i < relist.length; i++) {
+        //     const re = relist[i];
+        //     if ('error' in re) {
+        //       alert('解析に失敗しました\nエラーメッセージ：' + re['error']);
+        //       this.router.navigate(['/condition']);
+        //       return;
+        //     }
+        //     console.log(re);
+        //     // 計算結果を処理
+        //     const R: number = re['r'];
+        //     const L: number = re['s'];
+        //     const FL: number = re['t'];
+        //     const u: boolean = re['u'];
+        //     const j: string = (u === true) ? 'する' : 'しない';
+        //     // 解析条件
+        //     const Z = body.soil[i].Z;
+        //     const sv = body.soil[i].sv;
+        //     const svd = body.soil[i].svd;
+
+        //     // 結果を格納する
+        //     this.sd.resultData.push([Z, sv, svd, R, L, FL, j])
+
+        //   }
+        //   console.log(response);
+        //   // 正常に処理が終了したら result 画面を表示する
+        //   this.router.navigate(['/result']);
+        // }
+
+      },
+        error => {
+          alert('解析に失敗しました\n通信状態：' + error.statusText + '\nエラーメッセージ：' + error.message);
+          console.log(error);
+          // this.router.navigate(['/condition']);
         }
       );
   }
+
 
   // // ログイン関係
   // logIn(): void {
@@ -269,23 +261,23 @@ export class MenuComponent implements OnInit {
   // }
 
   public contentsDailogShow(id: string): void {
-    this.deactiveButtons();
-    document.getElementById(id)!.classList.add('active');
-    this.user.isContentsDailogShow = true;
-    //this.setDialogHeight();
-  }
+  this.deactiveButtons();
+  document.getElementById(id)!.classList.add('active');
+  this.user.isContentsDailogShow = true;
+  //this.setDialogHeight();
+}
 
-  // アクティブになっているボタンを全て非アクティブにする
-  deactiveButtons() {
-    for (let i = 0; i <= 13; i++) {
-      const data = document.getElementById(i + '');
-      if (data != null) {
-        if (data.classList.contains('active')) {
-          data.classList.remove('active');
-        }
+// アクティブになっているボタンを全て非アクティブにする
+deactiveButtons() {
+  for (let i = 0; i <= 13; i++) {
+    const data = document.getElementById(i + '');
+    if (data != null) {
+      if (data.classList.contains('active')) {
+        data.classList.remove('active');
       }
     }
   }
+}
 
   //
   // public setDimension(dim: number){
@@ -330,9 +322,9 @@ export class MenuComponent implements OnInit {
 
   // テスト ---------------------------------------------
   private saveResult(text: string): void {
-    const blob = new window.Blob([text], { type: 'text/plain' });
-    FileSaver.saveAs(blob, 'frameWebResult.json');
-  }
+  const blob = new window.Blob([text], { type: 'text/plain' });
+  FileSaver.saveAs(blob, 'frameWebResult.json');
+}
 
   //解析結果ファイルを開く
   // resultopen(evt) {
