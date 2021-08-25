@@ -99,6 +99,8 @@ export class ThreeStranaService {
       verticeList.push(point);
     }
     if (verticeList.length <= 2) return;
+    this.AllStranaList[this.currentIndex].verticeList = verticeList;
+
     this.create(verticeList, ThreeObject);
   }
 
@@ -126,10 +128,18 @@ export class ThreeStranaService {
     }
 
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(vertice[0].x, vertice[0].y, 0);
+    if (this.currentIndex === '61'){
+      mesh.position.set(vertice[0].x, vertice[0].y, 0.3);
+    } else {
+      mesh.position.set(vertice[0].x, vertice[0].y, 0.0);
+    }
     mesh['memo'] = { position: { x: vertice[0].x, y: vertice[0].y } };
 
     ThreeObject.add(mesh);
+
+    // ここで当たり判定を行う
+    this.detectJudge(mesh, ThreeObject);
+
   }
 
   // ケースの荷重図を消去する
@@ -160,6 +170,64 @@ export class ThreeStranaService {
       }
       this.changeData(0, targetID);
     }
-    // console.log(this.AllStranaList);
   }
+
+
+  // 当たり判定を行う
+  private detectJudge(mesh, ThreeObject) {
+    this.scene.render(); // 当たり判定をするため、一度描画する
+
+    let judge: boolean = false; // 最終的な当たり判定
+
+    const verticeList = this.AllStranaList[this.currentIndex].verticeList;
+
+    // 対象のオブジェクトをdetectedObjectsにまとめる
+    const detectedObjects = new Array();
+    for (const id of Object.keys(this.AllStranaList)) {
+      const target = this.AllStranaList[id].ThreeObject.children[0];
+      detectedObjects.push(target);
+    }
+    //detectedObjects[this.currentIndex].position.z = 0.1
+    if (detectedObjects.length < 2) {
+      return; // 既存のobjectがなければスルー
+    }
+
+    for (const vertice of verticeList) {
+      let pointjudge: boolean = false;
+      // 点の中心付近の点が他のオブジェクトに当たっているか確認
+      // 全て当たっていれば、オブジェクト当たり判定はtrue(当たっている)
+      // 一つでも当たっていなければ、オブジェクト当たり判定はfalse(当たっていない)
+      for (let i = 0; i < 8; i++) {
+        const delta = Math.PI / 4 * i + 0.0001; // 0.0001は角度微調整用の定数(Math.atan(1/10000))
+        const delta_x = 0.0001 * Math.cos(delta);
+        const delta_y = 0.0001 * Math.sin(delta);
+
+        // 当たり判定用の光線を作成
+        const TopPos = new THREE.Vector3(vertice.x + delta_x, vertice.y + delta_y, 255)
+        const downVect = new THREE.Vector3(0,0,-1); 
+        const ray = new THREE.Raycaster(TopPos, downVect.normalize());
+
+        // 当たったobjectを検出する
+        const objs = ray.intersectObjects(detectedObjects, true);
+        if (objs.length >= 2) { //自身と既存のオブジェクトが検出されたら当たっているとみなす
+          // ここで既存のオブジェクトが2重に検出されている可能性有（バグ）
+          pointjudge = true;
+          break;
+        }
+      }
+      // 全てのpointjudgeがfalse(全ての点で当たっていない)であれば、何もしない。
+      // pointjudgeが一つでもtrueであれば、何かする。 
+      if (pointjudge) {
+        //当たり判定の結果trueを受けて、何かする判定をする。そのためのフラグを作る
+        judge = true;
+        break;
+      }
+    }
+    if (judge) { // 当たっているので何かする。
+      const message = mesh.parent.name + '番の地層が不適切に作成されました';
+      mesh.material.color.r = 1.00;
+      alert(message);
+    }
+  }
+
 }
