@@ -177,7 +177,7 @@ export class ThreeLoadService {
       item['material']['color'].setHex(0x000000);
 
       if (item.name === 'load' + index.toString()) {
-        item['material']['color'].setHex(0x00a5ff);
+        item['material']['color'].setHex(0x00a5f5);
       }
     }
 
