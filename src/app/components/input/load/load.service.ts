@@ -65,7 +65,7 @@ export class LoadService {
 
     for (const row of this.load) {
       const item = this.convertNumber(row);
-      if (item.x_s == null && item.x_d == null && item.loadAmount == null) {
+      if (item.x_s == null || item.x_d == null || item.loadAmount == null) {
         continue;
       }
 

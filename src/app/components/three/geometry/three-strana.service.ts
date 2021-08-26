@@ -10,7 +10,7 @@ import { ThreeSoilService } from './three-soil.service';
 })
 export class ThreeStranaService {
   // 全ケースの地層情報を保存
-  private AllStranaList: {};
+  public AllStranaList: {};
   private currentIndex: string;
   private currentIndex_child1: string;
   private currentIndex_child2: string;
@@ -55,6 +55,8 @@ export class ThreeStranaService {
       }
       // this.changeData()
     }
+    // this.soil.currentIndexを1に戻すために実行
+    this.soil.changeCase(1);
   }
 
   // ケースを追加する
@@ -83,6 +85,11 @@ export class ThreeStranaService {
         const object = ThreeObject.children[0];
         object.parent.remove(object);
       }
+    }
+    this.AllStranaList[this.currentIndex].verticeList = [];
+
+    if (stranaData === undefined) {
+      return;
     }
 
     const verticeList = [];
@@ -117,7 +124,13 @@ export class ThreeStranaService {
       );
     }
 
-    const geometry = new THREE.ShapeGeometry(stranaShape);
+    //const geometry = new THREE.ShapeGeometry(stranaShape);
+    const extrudeSettings = {
+      steps: 1,
+      depth: 0.1,
+      bevelEnabled: false,
+    };
+    const geometry = new THREE.ExtrudeGeometry( stranaShape, extrudeSettings );
     let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     if (this.currentIndex === '2') {
       material = new THREE.MeshBasicMaterial({ color: 0x00af30 });
@@ -128,11 +141,7 @@ export class ThreeStranaService {
     }
 
     const mesh = new THREE.Mesh(geometry, material);
-    if (this.currentIndex === '61'){
-      mesh.position.set(vertice[0].x, vertice[0].y, 0.3);
-    } else {
-      mesh.position.set(vertice[0].x, vertice[0].y, 0.0);
-    }
+    mesh.position.set(vertice[0].x, vertice[0].y, 0.0);
     mesh['memo'] = { position: { x: vertice[0].x, y: vertice[0].y } };
 
     ThreeObject.add(mesh);
@@ -185,9 +194,10 @@ export class ThreeStranaService {
     const detectedObjects = new Array();
     for (const id of Object.keys(this.AllStranaList)) {
       const target = this.AllStranaList[id].ThreeObject.children[0];
-      detectedObjects.push(target);
+      if (target !== undefined) {
+        detectedObjects.push(target);
+      }
     }
-    //detectedObjects[this.currentIndex].position.z = 0.1
     if (detectedObjects.length < 2) {
       return; // 既存のobjectがなければスルー
     }
