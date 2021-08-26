@@ -27,7 +27,8 @@
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
+            "tsConfig": "tsconfig.app.json",  
+            "showCircularDependencies": false,
             "aot": true,
             "assets": [
               "src/favicon.ico",

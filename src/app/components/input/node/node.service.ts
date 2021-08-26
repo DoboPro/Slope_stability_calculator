@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+// import { ThreedataService } from './threedata.service';
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +77,7 @@ export class NodeService {
         x: (item.x == null) ? empty : item.x,
         y: (item.y == null) ? empty : item.y,
       };
+      // const surface = this.threeData.ground;
     }
     return jsonData;
   }

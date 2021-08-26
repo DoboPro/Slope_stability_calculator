@@ -15,6 +15,8 @@ export class ThreeStranaService {
   private currentIndex_child1: string;
   private currentIndex_child2: string;
 
+  public GroundLinear = {};
+
   private organizationList;
 
   constructor(
@@ -40,6 +42,8 @@ export class ThreeStranaService {
     this.changeStrana(row, stranaData[this.currentIndex], nodeData);
 
     this.scene.render();
+
+    this.getGroundLinear();
 
     return;
   }
@@ -238,6 +242,54 @@ export class ThreeStranaService {
       mesh.material.color.r = 1.00;
       alert(message);
     }
+  }
+
+   // 地表面データの1次式を回収
+   public getGroundLinear () {
+
+    this.GroundLinear = {};
+    // const temp_GroundLinear = {};
+
+    let max_x: number = -65535;
+    let min_x: number =  65535;
+    const detectedObjects = [];
+
+    for (const id of Object.keys(this.AllStranaList)) {
+      // 地表面の左端と右端を調べる
+      const verticeList = this.AllStranaList[id].verticeList;
+      for (const node of verticeList) {
+        max_x = Math.max(max_x, node.x);
+        min_x = Math.min(min_x, node.x);
+        /*if (node.x in temp_GroundLinear) {
+          if ()
+        } else {
+          temp_GroundLinear[node.x] = node.y
+        }*/
+      }
+
+      // 同時に当たり判定のobjectを回収する
+      const ThreeObject = this.AllStranaList[id].ThreeObject;
+      detectedObjects.push(ThreeObject);
+    }
+
+    for ( let x = min_x; x <= max_x; x += 0.1 ) {
+      x = Math.round(x * 10) / 10;
+      // 当たり判定用の光線を作成
+      const TopPos = new THREE.Vector3(x, 65535, 0.0);
+      const downVect = new THREE.Vector3(0,-1,0); 
+      const ray = new THREE.Raycaster(TopPos, downVect.normalize());
+
+      // 当たったobjectを検出する
+      const objs = ray.intersectObjects(detectedObjects, true);
+      let min_distance = objs[0].distance;
+      for ( let num = 0; num < objs.length; num++ ) {
+        min_distance = Math.min(min_distance, objs[num].distance)
+      }
+      const y = 65535 - min_distance;
+      this.GroundLinear[x.toString()] = new THREE.Vector2(x, y);
+    }
+
+    return this.GroundLinear;
   }
 
 }
