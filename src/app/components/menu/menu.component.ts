@@ -1,5 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, ModalDismissReasons, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbModal,
+  ModalDismissReasons,
+  NgbModalRef,
+} from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from '../../app.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 // import { PrintService } from '../print/print.service';
@@ -27,10 +31,9 @@ import { UserInfoService } from 'src/app/providers/user-info.service';
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss', '../../app.component.scss']
+  styleUrls: ['./menu.component.scss', '../../app.component.scss'],
 })
 export class MenuComponent implements OnInit {
-
   // loginUserName: string;
   // userPoint: string;
   // loggedIn: boolean;
@@ -38,7 +41,7 @@ export class MenuComponent implements OnInit {
   // isCalculated: boolean;
   // amount: number;
   // n:number = 3;
-  input:any;
+  input: any;
 
   constructor(
     private modalService: NgbModal,
@@ -49,26 +52,23 @@ export class MenuComponent implements OnInit {
     private ResultData: ResultDataService,
     private http: HttpClient,
     private three: ThreeService,
-    private user:UserInfoService,
-    // private helper:DataHelperModule
+    private user: UserInfoService // private helper:DataHelperModule
   ) {
     // this.loggedIn = this.user.loggedIn;
     this.fileName = '';
   }
 
   ngOnInit() {
-    this.fileName = "斜面の安定計算ver 0.0.1"
+    this.fileName = '斜面の安定計算ver 0.0.1';
     // this.user.isContentsDailogShow = false;
     // this.auth.user.subscribe(user => {
     //   console.log(user);
     // });
 
-
     // firebase.firestore().settings({
     //   ignoreUndefinedProperties: true,
     // })
   }
-
 
   // 新規作成
   renew(): void {
@@ -76,12 +76,11 @@ export class MenuComponent implements OnInit {
     this.InputData.clear();
     // this.ResultData.clear();
     // this.three.ClearData();
-    this.fileName = "斜面の安定計算ver 0.0.1"
+    this.fileName = '斜面の安定計算ver 0.0.1';
   }
 
-
   // ファイルを開く
-  open(evt:any) {
+  open(evt: any) {
     this.app.dialogClose(); // 現在表示中の画面を閉じる
     this.InputData.clear();
     // this.ResultData.clear();
@@ -95,7 +94,7 @@ export class MenuComponent implements OnInit {
     this.fileToText(file)
       .then((text: any) => {
         this.app.dialogClose(); // 現在表示中の画面を閉じる
-      //  const old = this.helper.dimension;
+        //  const old = this.helper.dimension;
         this.InputData.loadInputData(text); // データを読み込む
         // if(old !== this.helper.dimension){
         //   this.setDimension(this.helper.dimension);
@@ -109,7 +108,7 @@ export class MenuComponent implements OnInit {
       });
   }
 
-  private fileToText(file:any): any {
+  private fileToText(file: any): any {
     const reader = new FileReader();
     reader.readAsText(file);
     return new Promise((resolve, reject) => {
@@ -130,107 +129,100 @@ export class MenuComponent implements OnInit {
       this.fileName = 'soil.json';
     }
     let ext = '';
-    if(this.InputData.getExt(this.fileName) !== 'json'){
+    if (this.InputData.getExt(this.fileName) !== 'json') {
       ext = '.json';
     }
     FileSaver.saveAs(blob, this.fileName + ext);
   }
 
   // 計算
-  // public calcurate(): void {
+  public calcrate(): void {
+    // if (this.loggedIn === true) {
+    // alert("計算を開始されるとお客様のポイントを消費しますが、よろしいですか？");
+    // this.auth.calc(this.amount);
+    // this.amount = this.auth.amount;
+    const modalRef = this.modalService.open(WaitDialogComponent);
 
-  //   // if (this.loggedIn === true) {
-  //     // alert("計算を開始されるとお客様のポイントを消費しますが、よろしいですか？");
-  //     // this.auth.calc(this.amount);
-  //     // this.amount = this.auth.amount;
-  //     const modalRef = this.modalService.open(WaitDialogComponent);
+    const jsonData: {} = this.InputData.getInputJson(0);
+    // console.log(JSON.stringify(jsonData));
 
-  //     const jsonData: {} = this.InputData.getInputJson(0);
-  //     // console.log(JSON.stringify(jsonData));
+    if ('error' in jsonData) {
+      alert(jsonData['error']);
+      modalRef.close(); // モーダルダイアログを消す
+      return;
+    }
+    // this.ResultData.clear(); // 解析結果情報をクリア
 
-  //     if ('error' in jsonData) {
-  //       alert(jsonData['error']);
-  //       modalRef.close(); // モーダルダイアログを消す
-  //       return;
-  //     }
-  //     this.ResultData.clear(); // 解析結果情報をクリア
+    this.post_compress(jsonData, modalRef);
+    // } else {
+    //   alert("ログインしてください")
+    // }
+  }
 
-  //     this.post_compress(jsonData, modalRef);
-  //   // } else {
-  //   //   alert("ログインしてください")
-  //   // }
-  // }
+  private post_compress(jsonData: {}, modalRef: NgbModalRef) {
+    const url = 'https://asia-northeast1-team-dobopro.cloudfunctions.net/SlopeStabilityCalculator';
 
-//   private post_compress(jsonData: {}, modalRef: NgbModalRef) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
 
-//  //   const url = 'https://asia-northeast1-the-structural-engine.cloudfunctions.net/frameWeb-2';
-//     //const url = 'http://127.0.0.1:5000';
+    const js: string = JSON.stringify(jsonData,null,0);
+    // const blob = new window.Blob([js], { type: 'text/plain' });
+    // FileSaver.saveAs(blob, 'test.json');
+    console.log(js);
 
-//     // json string にする
-//     const json = JSON.stringify(jsonData, null, 0);
-//     console.log(json);
-//     // pako を使ってgzip圧縮する
-//     const compressed = pako.gzip(json);
-//     //btoa() を使ってBase64エンコードする
-//     const base64Encoded = btoa(compressed);
+    this.http.post(
+      'https://asia-northeast1-team-dobopro.cloudfunctions.net/SlopeStabilityCalculator',
+      js,
+      httpOptions
+    ).toPromise()
+      .then((response) => {
+        if ('error' in response) {
+          alert('解析に失敗しました\nエラーメッセージ：' + response['error']);
+          // this.router.navigate(['/condition']);
+        }
 
-//     this.http.post(url, base64Encoded, {
-//       headers: new HttpHeaders({
-//         'Content-Type': 'application/json',
-//         'Content-Encoding': 'gzip,base64'
-//       }),
-//       responseType: 'text'
-//     }).subscribe(
-//       response => {
-//         // 通信成功時の処理（成功コールバック）
-//         console.log('通信成功!!');
-//         try {
-//           if ( response.includes('error')){
-//             throw response;
-//           }
-//           // Decode base64 (convert ascii to binary)
-//           const strData = atob(response);
-//           // Convert binary string to character-number array
-//           const charData = strData.split('').map(function (x) { return x.charCodeAt(0); });
-//           // Turn number array into byte-array
-//           const binData = new Uint8Array(charData);
-//           // Pako magic
-//           const json = pako.ungzip(binData, { to: 'string' });
+        // if ('results' in response) {
+        //   const relist: [] = response['results'];
+        //   for (let i = 0; i < relist.length; i++) {
+        //     const re = relist[i];
+        //     if ('error' in re) {
+        //       alert('解析に失敗しました\nエラーメッセージ：' + re['error']);
+        //       this.router.navigate(['/condition']);
+        //       return;
+        //     }
+        //     console.log(re);
+        //     // 計算結果を処理
+        //     const R: number = re['r'];
+        //     const L: number = re['s'];
+        //     const FL: number = re['t'];
+        //     const u: boolean = re['u'];
+        //     const j: string = (u === true) ? 'する' : 'しない';
+        //     // 解析条件
+        //     const Z = body.soil[i].Z;
+        //     const sv = body.soil[i].sv;
+        //     const svd = body.soil[i].svd;
 
+        //     // 結果を格納する
+        //     this.sd.resultData.push([Z, sv, svd, R, L, FL, j])
 
-//           // テスト ---------------------------------------------
-//           // this.saveResult(json);
-//           // --------------------------------------------- テスト*/
+        //   }
+        //   console.log(response);
+        //   // 正常に処理が終了したら result 画面を表示する
+        //   this.router.navigate(['/result']);
+        // }
 
-//           const jsonData = JSON.parse(json);
-//           // サーバーのレスポンスを集計する
-//           console.log(jsonData);
-//           if ( 'error' in jsonData){
-//             throw jsonData.error;
-//           }
-//           // 解析結果を集計する
-//           this.ResultData.loadResultData(jsonData);
-//           // ユーザーの保有ポイントの表示を更新する
-//           this.user.loadResultData(jsonData);
-//           this.userPoint = this.user.purchase_value.toString();
-//         } catch (e) {
-//           alert(e);
-//         } finally {
-//           modalRef.close(); // モーダルダイアログを消す
-//         }
-//       },
-//       error => {
+      },
+        error => {
+          alert('解析に失敗しました\n通信状態：' + error.statusText + '\nエラーメッセージ：' + error.message);
+          console.log(error);
+          // this.router.navigate(['/condition']);
+        }
+      );
+  }
 
-//         let messege: string = '通信 ' + error.statusText;
-//         if ('_body' in error) {
-//           messege += '\n' + error._body;
-//         }
-//         alert(messege);
-//         console.error(error);
-//         modalRef.close();
-//       }
-//     );
-//   }
 
   // // ログイン関係
   // logIn(): void {
@@ -268,24 +260,24 @@ export class MenuComponent implements OnInit {
   //   this.user.isContentsDailogShow = false;
   // }
 
-  public contentsDailogShow(id:string): void {
-    this.deactiveButtons();
-    document.getElementById(id)!.classList.add('active');
-    this.user.isContentsDailogShow = true;
-    //this.setDialogHeight();
-  }
+  public contentsDailogShow(id: string): void {
+  this.deactiveButtons();
+  document.getElementById(id)!.classList.add('active');
+  this.user.isContentsDailogShow = true;
+  //this.setDialogHeight();
+}
 
-  // アクティブになっているボタンを全て非アクティブにする
-  deactiveButtons() {
-    for (let i = 0; i <= 13; i++) {
-      const data = document.getElementById(i + '');
-      if (data != null) {
-        if (data.classList.contains('active')) {
-          data.classList.remove('active');
-        }
+// アクティブになっているボタンを全て非アクティブにする
+deactiveButtons() {
+  for (let i = 0; i <= 13; i++) {
+    const data = document.getElementById(i + '');
+    if (data != null) {
+      if (data.classList.contains('active')) {
+        data.classList.remove('active');
       }
     }
   }
+}
 
   //
   // public setDimension(dim: number){
@@ -307,7 +299,6 @@ export class MenuComponent implements OnInit {
   //     const g22D: any = document.getElementById("2D");
   //     g22D.checked = false;
   //   }
-
 
   // }
 
@@ -331,9 +322,9 @@ export class MenuComponent implements OnInit {
 
   // テスト ---------------------------------------------
   private saveResult(text: string): void {
-    const blob = new window.Blob([text], { type: 'text/plain' });
-    FileSaver.saveAs(blob, 'frameWebResult.json');
-  }
+  const blob = new window.Blob([text], { type: 'text/plain' });
+  FileSaver.saveAs(blob, 'frameWebResult.json');
+}
 
   //解析結果ファイルを開く
   // resultopen(evt) {
@@ -360,7 +351,4 @@ export class MenuComponent implements OnInit {
   //     });
   // }
   // --------------------------------------------- テスト */
-
-
 }
-
