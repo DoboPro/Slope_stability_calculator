@@ -39,9 +39,9 @@ export class ThreeService {
   public fileload(): void {
     // ファイルを読み込んだ
     this.node.changeData();
-    this.load.changeData();
-    this.waterlevel.changeData();
     this.strana.resetData();
+    this.waterlevel.changeData();
+    this.load.changeData();
     this.scene.render();
   }
 
@@ -50,11 +50,9 @@ export class ThreeService {
   public changeData(mode: string = '', index: number = 0): void {
     switch (mode) {
       case 'node':
-        /* this.strana.changeNode(
+        this.strana.changeNode(
           this.node.changeData()
-        ); */
-        const a = this.node.changeData();
-        this.strana.changeNode(a);
+        );
         /*this.load.changeNode(
           this.node.changeData()
         );*/
@@ -72,9 +70,9 @@ export class ThreeService {
         this.waterlevel.changeData();
         break;
 
-      //   case "load":
-      //     this.load.changeData();
-      //     break;
+      case "load":
+        this.load.changeData();
+        break;
 
       default:
         // 何御しない

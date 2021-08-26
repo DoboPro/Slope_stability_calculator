@@ -10,7 +10,7 @@ import { ThreeSoilService } from './three-soil.service';
 })
 export class ThreeStranaService {
   // 全ケースの地層情報を保存
-  private AllStranaList: {};
+  public AllStranaList: {};
   private currentIndex: string;
   private currentIndex_child1: string;
   private currentIndex_child2: string;
@@ -124,7 +124,13 @@ export class ThreeStranaService {
       );
     }
 
-    const geometry = new THREE.ShapeGeometry(stranaShape);
+    //const geometry = new THREE.ShapeGeometry(stranaShape);
+    const extrudeSettings = {
+      steps: 1,
+      depth: 0.1,
+      bevelEnabled: false,
+    };
+    const geometry = new THREE.ExtrudeGeometry( stranaShape, extrudeSettings );
     let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     if (this.currentIndex === '2') {
       material = new THREE.MeshBasicMaterial({ color: 0x00af30 });
