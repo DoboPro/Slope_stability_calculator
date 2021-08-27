@@ -26,6 +26,7 @@ import * as pako from 'pako';
 // import firebase from 'firebase';
 import { SceneService } from '../three/scene.service';
 import { UserInfoService } from 'src/app/providers/user-info.service';
+import { SafetyRatioService } from '../result/safety-ratio/safety-ratio.service';
 // import { DataHelperModule } from 'src/app/providers/data-helper.module';
 
 @Component({
@@ -52,7 +53,8 @@ export class MenuComponent implements OnInit {
     private ResultData: ResultDataService,
     private http: HttpClient,
     private three: ThreeService,
-    private user: UserInfoService // private helper:DataHelperModule
+    private user: UserInfoService, // private helper:DataHelperModule
+    public safety:SafetyRatioService
   ) {
     // this.loggedIn = this.user.loggedIn;
     this.fileName = '';
@@ -165,55 +167,45 @@ export class MenuComponent implements OnInit {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
-      })
+      }),
+      //  'text'
     };
 
-    const js: string = JSON.stringify(jsonData,null,0);
+    const js: string = JSON.stringify(jsonData);
     // const blob = new window.Blob([js], { type: 'text/plain' });
     // FileSaver.saveAs(blob, 'test.json');
     console.log(js);
 
     this.http.post(
-      'https://asia-northeast1-team-dobopro.cloudfunctions.net/SlopeStabilityCalculator',
+      url,
       js,
-      httpOptions
-    ).toPromise()
-      .then((response) => {
-        if ('error' in response) {
-          alert('解析に失敗しました\nエラーメッセージ：' + response['error']);
-          // this.router.navigate(['/condition']);
-        }
+      {headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      responseType: 'text'
+    }).toPromise()
+      .then(response => {
+    
+          // alert('解析に失敗しました\nエラーメッセージ：' + response);
+          // this.router.navigate(['/condition']);  
+          const re1 = response;    
+          const obj = JSON.parse(re1);  
+       
+          const minX = obj['minX'];
+          const minY = obj['minY'];
+          const minR = obj['minR'];
+          const reNode = obj["reNode"];
 
-        // if ('results' in response) {
-        //   const relist: [] = response['results'];
-        //   for (let i = 0; i < relist.length; i++) {
-        //     const re = relist[i];
-        //     if ('error' in re) {
-        //       alert('解析に失敗しました\nエラーメッセージ：' + re['error']);
-        //       this.router.navigate(['/condition']);
-        //       return;
-        //     }
-        //     console.log(re);
-        //     // 計算結果を処理
-        //     const R: number = re['r'];
-        //     const L: number = re['s'];
-        //     const FL: number = re['t'];
-        //     const u: boolean = re['u'];
-        //     const j: string = (u === true) ? 'する' : 'しない';
-        //     // 解析条件
-        //     const Z = body.soil[i].Z;
-        //     const sv = body.soil[i].sv;
-        //     const svd = body.soil[i].svd;
+          this.safety.result(minX,minY,minR,reNode);
 
-        //     // 結果を格納する
-        //     this.sd.resultData.push([Z, sv, svd, R, L, FL, j])
 
-        //   }
-        //   console.log(response);
-        //   // 正常に処理が終了したら result 画面を表示する
-        //   this.router.navigate(['/result']);
-        // }
-
+          modalRef.close();
+          // const  = response['y'];
+          // this.x = response['x'];
+          // this.y= response['y'];
+          // this.R = response['R'];
+          // this.F= response['F'];
+          
       },
         error => {
           alert('解析に失敗しました\n通信状態：' + error.statusText + '\nエラーメッセージ：' + error.message);
