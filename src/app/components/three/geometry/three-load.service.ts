@@ -17,7 +17,7 @@ export class ThreeLoadService {
   public maxDistance: number;
   public minDistance: number;
 
-  public groundLinear: any;
+  public groundLinear: any; // 地表面の座標の連想配列(0.1間隔)
 
   
   private newNodeData: any;    // 変更された 節点データ
@@ -98,7 +98,8 @@ export class ThreeLoadService {
       }
     } */
     
-    this.groundLinear = this.getGroundLinear();
+    // stranaデータとgroundLinearを共有
+    this.groundLinear = this.strana.groundLinear;
 
 
     // 新しい入力を適用する
@@ -117,7 +118,8 @@ export class ThreeLoadService {
                            this.groundLinear[jsonData[key].x_d].y, 0 );
 
         // スケールを調整する。（要調整）
-        this.meshResize( mesh, jsonData[key].loadAmount / maxLoadAmount);
+        const scale = jsonData[key].loadAmount / maxLoadAmount;
+        this.meshResize( mesh, scale );
 
         this.loadList.add(mesh);
 
@@ -200,7 +202,7 @@ export class ThreeLoadService {
     const end = new THREE.Vector2(end_x, this.getSurfaceY(end_x));
 
     const points = [ start ];
-    const span = 1.0;
+    const span = 1.0; // 間の矢印の間隔
     const len = end.x - start.x;
     const number = Math.floor(len / span) - 1;
     for (let n = 1; n < number + 1; n++ ) {
@@ -273,7 +275,7 @@ export class ThreeLoadService {
   }
 
 
-  // 地表面データの1次式を回収
+  /* // 地表面データの1次式を回収(stranaに移動したため、削除)
   public getGroundLinear () {
 
     const GroundLinear = {};
@@ -289,11 +291,6 @@ export class ThreeLoadService {
       for (const node of verticeList) {
         max_x = Math.max(max_x, node.x);
         min_x = Math.min(min_x, node.x);
-        /*if (node.x in temp_GroundLinear) {
-          if ()
-        } else {
-          temp_GroundLinear[node.x] = node.y
-        }*/
       }
 
       // 同時に当たり判定のobjectを回収する
@@ -319,9 +316,9 @@ export class ThreeLoadService {
     }
 
     return GroundLinear;
-  }
+  } */
 
-  // this.groundLinear(getGroundLinear)のデータを基に、二次元座標を入手する。
+  // this.groundLinear(this.strana.groundLinear)のデータを基に、二次元座標を入手する。
   private getSurfaceY (x: number) {
     let y: number;
     if (x in this.groundLinear) {
@@ -331,7 +328,7 @@ export class ThreeLoadService {
       const b = Math.round((a + 0.1)*10) / 10;
       const c = x % 0.1;
       if (!(a in this.groundLinear) || !(b in this.groundLinear)) {
-        alert("getSurfaceYでエラーが発生しました。")
+        alert("荷重の始点Xまたは、終点Xでエラーが発生しました。")
       }
       y = this.groundLinear[a].y + (this.groundLinear[a].y - this.groundLinear[b].y) * c
     }

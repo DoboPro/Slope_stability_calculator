@@ -17,6 +17,8 @@ export class ThreeStranaService {
 
   private organizationList;
 
+  public groundLinear: any;
+
   constructor(
     private node: NodeService,
     private soil: ThreeSoilService,
@@ -109,15 +111,16 @@ export class ThreeStranaService {
     this.AllStranaList[this.currentIndex].verticeList = verticeList;
 
     this.create(verticeList, ThreeObject);
+
+    // 地表面の座標を獲得する
+    this.groundLinear = this.getGroundLinear();
   }
 
   private create(vertice, ThreeObject) {
     const stranaShape = new THREE.Shape();
 
-    //stranaShape.moveTo(vertice[0].x, vertice[0].y)
     stranaShape.moveTo(0, 0);
     for (let num = 1; num < vertice.length; num++) {
-      //stranaShape.lineTo(vertice[num].x, vertice[num].y)
       stranaShape.lineTo(
         vertice[num].x - vertice[0].x,
         vertice[num].y - vertice[0].y
@@ -238,6 +241,49 @@ export class ThreeStranaService {
       mesh.material.color.r = 1.00;
       alert(message);
     }
+  }
+
+  // 地表面データの1次式を回収
+  public getGroundLinear () {
+
+    const GroundLinear = {};
+    // const temp_GroundLinear = {};
+
+    let max_x: number = -65535;
+    let min_x: number =  65535;
+    const detectedObjects = [];
+
+    for (const id of Object.keys(this.AllStranaList)) {
+      // 地表面の左端と右端を調べる
+      const verticeList = this.AllStranaList[id].verticeList;
+      for (const node of verticeList) {
+        max_x = Math.max(max_x, node.x);
+        min_x = Math.min(min_x, node.x);
+      }
+
+      // 同時に当たり判定のobjectを回収する
+      const ThreeObject = this.AllStranaList[id].ThreeObject;
+      detectedObjects.push(ThreeObject);
+    }
+
+    for ( let x = min_x; x <= max_x; x += 0.1 ) {
+      x = Math.round(x * 10) / 10;
+      // 当たり判定用の光線を作成
+      const TopPos = new THREE.Vector3(x, 65535, 0.0);
+      const downVect = new THREE.Vector3(0,-1,0); 
+      const ray = new THREE.Raycaster(TopPos, downVect.normalize());
+
+      // 当たったobjectを検出する
+      const objs = ray.intersectObjects(detectedObjects, true);
+      let min_distance = objs[0].distance;
+      for ( let num = 0; num < objs.length; num++ ) {
+        min_distance = Math.min(min_distance, objs[num].distance)
+      }
+      const y = 65535 - min_distance;
+      GroundLinear[x.toString()] = new THREE.Vector2(x, y);
+    }
+
+    return GroundLinear;
   }
 
 }
