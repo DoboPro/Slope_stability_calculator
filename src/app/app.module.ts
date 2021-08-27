@@ -23,6 +23,7 @@ import { LoadComponent } from './components/input/load/load.component';
 import { InitialConditionComponent } from './components/input/initial-condition/initial-condition.component';
 import { SheetComponent } from './components/input/sheet/sheet.component';
 import { PagerComponent } from './components/input/pager/pager.component';
+import { SafetyRatioComponent } from './components/result/safety-ratio/safety-ratio.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { PagerComponent } from './components/input/pager/pager.component';
     SoilComponent,
     SheetComponent,
     PagerComponent,
+    SafetyRatioComponent,
   ],
   imports: [
     BrowserModule,
