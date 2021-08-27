@@ -198,6 +198,7 @@ export class MenuComponent implements OnInit {
 
           this.safety.result(minX,minY,minR,reNode);
 
+          this.ResultData.loadResultData(minX,minY,minR,reNode)
 
           modalRef.close();
           // const  = response['y'];

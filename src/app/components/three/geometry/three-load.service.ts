@@ -147,6 +147,13 @@ export class ThreeLoadService {
     // 節点の入力が変更された場合 新しい入力データを保持しておく
     public changeNode(jsonData): void {
       this.newNodeData = jsonData;
+      for (const targetID of Object.keys(this.loadList.children)) {
+        const target = this.loadList.children[targetID];
+        if (target.children.length < 1) {
+          continue;
+        }
+        this.changeData();
+      }
     }
 
   // データをクリアする
@@ -221,6 +228,8 @@ export class ThreeLoadService {
 
       const arrowPoints = [];
       arrowPoints.push( new THREE.Vector3( size * Math.cos(Math.PI / 3), size * Math.sin(Math.PI / 3), 0 ) );
+      arrowPoints.push( new THREE.Vector3( 0, 0, 0 ) );
+      arrowPoints.push( new THREE.Vector3( size * Math.cos(2 * Math.PI / 3), size * Math.sin(2 * Math.PI / 3), 0 ) );
       arrowPoints.push( new THREE.Vector3( 0, 0, 0 ) );
       arrowPoints.push( new THREE.Vector3( 0, size * 3, 0 ) );
       const geometry = new THREE.BufferGeometry().setFromPoints( arrowPoints );
