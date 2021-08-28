@@ -4,6 +4,7 @@ import { StranaService } from '../components/input/strana/strana.service';
 import { WaterlevelService } from '../components/input/waterlevel/waterlevel.service';
 import { LoadService } from '../components/input/load/load.service';
 import { InitialConditionService } from '../components/input/initial-condition/initial-condition.service';
+import { SurfaceService } from '../components/input/node/surface.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ export class InputDataService {
     public strana: StranaService,
     public waterlevel: WaterlevelService,
     public load: LoadService,
-    public initialCondition: InitialConditionService
+    public initialCondition: InitialConditionService,
+    public surface: SurfaceService
   ) {
     this.clear();
   }
@@ -41,37 +43,36 @@ export class InputDataService {
   // empty = null: ファイル保存時
   // empty = 0: 計算時
   public getInputJson(empty: number = null): object {
-
     const jsonData = {};
 
     const node: {} = this.node.getNodeJson(empty);
-    if (Object.keys(node).length > 0) {
-      jsonData['node'] = node;
-    } else if(empty === 0){
+    const surface: {} = this.surface.getSurfaceJsons(node);
+    if (Object.keys(surface).length > 0) {
+      jsonData['node'] = surface;
+    } else if (empty === 0) {
       jsonData['node'] = {};
     }
 
     const strana: {} = this.strana.getStranaJson(empty);
     if (Object.keys(strana).length > 0) {
       jsonData['strana'] = strana;
-    } else if(empty === 0){
+    } else if (empty === 0) {
       jsonData['strana'] = {};
     }
 
     const waterlevel: {} = this.waterlevel.getWaterlevelJson(empty);
     if (Object.keys(waterlevel).length > 0) {
       jsonData['waterlevel'] = waterlevel;
-    } else if(empty === 0){
+    } else if (empty === 0) {
       jsonData['waterlevel'] = {};
     }
 
     const load: {} = this.load.getloadJson(empty);
     if (Object.keys(load).length > 0) {
       jsonData['load'] = load;
-    } else if(empty === 0){
+    } else if (empty === 0) {
       jsonData['load'] = {};
     }
-
 
     return jsonData;
   }

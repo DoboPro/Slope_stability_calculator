@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NodeService {
-
   public node: any[];
 
   constructor() {
@@ -31,7 +30,6 @@ export class NodeService {
     return result;
   }
 
-
   // ファイルを読み込む
   public setNodeJson(jsonData: any): void {
     if (!('node' in jsonData)) {
@@ -42,8 +40,8 @@ export class NodeService {
       const item = this.convertNumber(json[index]);
       const result = {
         id: index,
-        x: (item.x === null) ? '' : item.x.toFixed(3),
-        y: (item.y === null) ? '' : item.y.toFixed(3)
+        x: item.x === null ? '' : item.x.toFixed(3),
+        y: item.y === null ? '' : item.y.toFixed(3),
       };
       this.node.push(result);
     }
@@ -56,16 +54,14 @@ export class NodeService {
     return {
       x,
       y,
-      z
+      z,
     };
   }
 
-  public getNodeJson(empty: number = null ): object {
-
+  public getNodeJson(empty: number = null): object {
     const jsonData: object = {};
 
     for (const row of this.node) {
-
       const item = this.convertNumber(row);
       if (item.x == null && item.y == null) {
         continue;
@@ -73,8 +69,9 @@ export class NodeService {
 
       const key: string = row.id;
       jsonData[key] = {
-        x: (item.x == null) ? empty : item.x,
-        y: (item.y == null) ? empty : item.y,
+        x: item.x == null ? empty : item.x,
+        y: item.y == null ? empty : item.y,
+        surface: item.x == null && item.y == null ? empty : false,
       };
     }
     return jsonData;

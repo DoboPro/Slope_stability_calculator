@@ -19,6 +19,9 @@ export class ThreeStranaService {
 
   public groundLinear: any;
 
+  public min_x: number;
+  public max_x: number;
+
   constructor(
     private node: NodeService,
     private soil: ThreeSoilService,
@@ -133,7 +136,7 @@ export class ThreeStranaService {
       depth: 0.1,
       bevelEnabled: false,
     };
-    const geometry = new THREE.ExtrudeGeometry( stranaShape, extrudeSettings );
+    const geometry = new THREE.ExtrudeGeometry(stranaShape, extrudeSettings);
     let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     if (this.currentIndex === '2') {
       material = new THREE.MeshBasicMaterial({ color: 0x00af30 });
@@ -151,7 +154,6 @@ export class ThreeStranaService {
 
     // ここで当たり判定を行う
     this.detectJudge(mesh, ThreeObject);
-
   }
 
   // ケースの荷重図を消去する
@@ -184,7 +186,6 @@ export class ThreeStranaService {
     }
   }
 
-
   // 当たり判定を行う
   private detectJudge(mesh, ThreeObject) {
     this.scene.render(); // 当たり判定をするため、一度描画する
@@ -211,54 +212,59 @@ export class ThreeStranaService {
       // 全て当たっていれば、オブジェクト当たり判定はtrue(当たっている)
       // 一つでも当たっていなければ、オブジェクト当たり判定はfalse(当たっていない)
       for (let i = 0; i < 8; i++) {
-        const delta = Math.PI / 4 * i + 0.0001; // 0.0001は角度微調整用の定数(Math.atan(1/10000))
+        const delta = (Math.PI / 4) * i + 0.0001; // 0.0001は角度微調整用の定数(Math.atan(1/10000))
         const delta_x = 0.0001 * Math.cos(delta);
         const delta_y = 0.0001 * Math.sin(delta);
 
         // 当たり判定用の光線を作成
-        const TopPos = new THREE.Vector3(vertice.x + delta_x, vertice.y + delta_y, 255)
-        const downVect = new THREE.Vector3(0,0,-1); 
+        const TopPos = new THREE.Vector3(
+          vertice.x + delta_x,
+          vertice.y + delta_y,
+          255
+        );
+        const downVect = new THREE.Vector3(0, 0, -1);
         const ray = new THREE.Raycaster(TopPos, downVect.normalize());
 
         // 当たったobjectを検出する
         const objs = ray.intersectObjects(detectedObjects, true);
-        if (objs.length >= 2) { //自身と既存のオブジェクトが検出されたら当たっているとみなす
+        if (objs.length >= 2) {
+          //自身と既存のオブジェクトが検出されたら当たっているとみなす
           // ここで既存のオブジェクトが2重に検出されている可能性有（バグ）
           pointjudge = true;
           break;
         }
       }
       // 全てのpointjudgeがfalse(全ての点で当たっていない)であれば、何もしない。
-      // pointjudgeが一つでもtrueであれば、何かする。 
+      // pointjudgeが一つでもtrueであれば、何かする。
       if (pointjudge) {
         //当たり判定の結果trueを受けて、何かする判定をする。そのためのフラグを作る
         judge = true;
         break;
       }
     }
-    if (judge) { // 当たっているので何かする。
+    if (judge) {
+      // 当たっているので何かする。
       const message = mesh.parent.name + '番の地層が不適切に作成されました';
-      mesh.material.color.r = 1.00;
+      mesh.material.color.r = 1.0;
       alert(message);
     }
   }
 
   // 地表面データの1次式を回収
-  public getGroundLinear () {
-
+  public getGroundLinear() {
     const GroundLinear = {};
     // const temp_GroundLinear = {};
 
-    let max_x: number = -65535;
-    let min_x: number =  65535;
+    this.max_x = -65535;
+    this.min_x = 65535;
     const detectedObjects = [];
 
     for (const id of Object.keys(this.AllStranaList)) {
       // 地表面の左端と右端を調べる
       const verticeList = this.AllStranaList[id].verticeList;
       for (const node of verticeList) {
-        max_x = Math.max(max_x, node.x);
-        min_x = Math.min(min_x, node.x);
+        this.max_x = Math.max(this.max_x, node.x);
+        this.min_x = Math.min(this.min_x, node.x);
       }
 
       // 同時に当たり判定のobjectを回収する
@@ -266,18 +272,18 @@ export class ThreeStranaService {
       detectedObjects.push(ThreeObject);
     }
 
-    for ( let x = min_x; x <= max_x; x += 0.1 ) {
+    for (let x = this.min_x; x <= this.max_x; x += 0.1) {
       x = Math.round(x * 10) / 10;
       // 当たり判定用の光線を作成
       const TopPos = new THREE.Vector3(x, 65535, 0.0);
-      const downVect = new THREE.Vector3(0,-1,0); 
+      const downVect = new THREE.Vector3(0, -1, 0);
       const ray = new THREE.Raycaster(TopPos, downVect.normalize());
 
       // 当たったobjectを検出する
       const objs = ray.intersectObjects(detectedObjects, true);
       let min_distance = objs[0].distance;
-      for ( let num = 0; num < objs.length; num++ ) {
-        min_distance = Math.min(min_distance, objs[num].distance)
+      for (let num = 0; num < objs.length; num++) {
+        min_distance = Math.min(min_distance, objs[num].distance);
       }
       const y = 65535 - min_distance;
       GroundLinear[x.toString()] = new THREE.Vector2(x, y);
@@ -285,5 +291,4 @@ export class ThreeStranaService {
 
     return GroundLinear;
   }
-
 }
