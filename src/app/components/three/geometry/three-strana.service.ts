@@ -43,10 +43,12 @@ export class ThreeStranaService {
       return;
     }
 
-    const stranaData = this.strana.getOrganizationJson(0, this.currentIndex);
-    this.changeStrana(row, stranaData[this.currentIndex], nodeData);
+    const soilData = this.strana.getSoilJson();
 
-    this.scene.render();
+    const stranaData = this.strana.getOrganizationJson(0, this.currentIndex);
+    this.changeStrana(row, stranaData[this.currentIndex], nodeData, soilData[this.currentIndex]);
+
+    //this.scene.render();
 
     return;
   }
@@ -86,7 +88,7 @@ export class ThreeStranaService {
   //   this.scene.add(ThreeObject); // シーンに追加
   // }
 
-  private changeStrana(row, stranaData, nodeData) {
+  private changeStrana(row, stranaData, nodeData, soilData) {
     const ThreeObject = this.AllStranaList[this.currentIndex].ThreeObject;
     if (ThreeObject.children.length >= 1) {
       while (ThreeObject.children.length > 0) {
@@ -116,13 +118,21 @@ export class ThreeStranaService {
     if (verticeList.length <= 2) return;
     this.AllStranaList[this.currentIndex].verticeList = verticeList;
 
-    this.create(verticeList, ThreeObject);
+    // とりあえず色をランダムに設定しておく
+    let color = new THREE.Color(0x000000);
+    if (soilData.color === undefined) {
+      const a = Math.random();
+      color = new THREE.Color(0x00ffff * a);
+    } else {
+      color = new THREE.Color(soilData.color);
+    }
+    this.create(verticeList, ThreeObject, color);
 
     // 地表面の座標を獲得する
     this.getDetectedObjects();
   }
 
-  private create(vertice, ThreeObject) {
+  private create(vertice, ThreeObject, color) {
     const stranaShape = new THREE.Shape();
 
     stranaShape.moveTo(0, 0);
@@ -140,14 +150,7 @@ export class ThreeStranaService {
       bevelEnabled: false,
     };
     const geometry = new THREE.ExtrudeGeometry( stranaShape, extrudeSettings );
-    let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    if (this.currentIndex === '2') {
-      material = new THREE.MeshBasicMaterial({ color: 0x00af30 });
-    } else if (this.currentIndex === '3') {
-      material = new THREE.MeshBasicMaterial({ color: 0x006f60 });
-    } else if (this.currentIndex === '4') {
-      material = new THREE.MeshBasicMaterial({ color: 0x003f90 });
-    }
+    const material = new THREE.MeshBasicMaterial({ color: color });
 
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(vertice[0].x, vertice[0].y, 0.0);
