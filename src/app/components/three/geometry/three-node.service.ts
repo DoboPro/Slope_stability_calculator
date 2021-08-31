@@ -62,6 +62,14 @@ export class ThreeNodeService {
       this.txtVisible = value;
       this.scene.render();
     });
+    /* this.scene.gui.addColor({color: "#1861b3"}, 'color').onChange((value) => {
+      //this.update(value);
+      console.log(value);
+      const colorObj = new THREE.Color( value );
+      const hex = colorObj.getHexString();
+      const css = colorObj.getStyle();
+      console.log( "#" + hex + " or " + css);
+    }); */
   }
 
   // データが変更された時の処理

@@ -18,6 +18,9 @@ export class ThreeStranaService {
   private organizationList;
 
   public groundLinear: any;
+  private detectedObjects: any;
+  private max_x: number;
+  private min_x: number;
 
   constructor(
     private node: NodeService,
@@ -26,6 +29,8 @@ export class ThreeStranaService {
     private scene: SceneService
   ) {
     this.AllStranaList = this.soil.AllStranaList;
+    this.groundLinear = {};
+    this.detectedObjects = [];
   }
 
   // 表示ケースを変更する
@@ -59,6 +64,7 @@ export class ThreeStranaService {
     }
     // this.soil.currentIndexを1に戻すために実行
     this.soil.changeCase(1);
+    this.getGroundLinear();
   }
 
   // ケースを追加する
@@ -113,7 +119,7 @@ export class ThreeStranaService {
     this.create(verticeList, ThreeObject);
 
     // 地表面の座標を獲得する
-    this.groundLinear = this.getGroundLinear();
+    this.getDetectedObjects();
   }
 
   private create(vertice, ThreeObject) {
@@ -182,6 +188,7 @@ export class ThreeStranaService {
       }
       this.changeData(0, targetID);
     }
+    this.getGroundLinear();
   }
 
 
@@ -244,29 +251,30 @@ export class ThreeStranaService {
   }
 
   // 地表面データの1次式を回収
-  public getGroundLinear () {
+  public getDetectedObjects () {
 
-    const GroundLinear = {};
-    // const temp_GroundLinear = {};
-
-    let max_x: number = -65535;
-    let min_x: number =  65535;
-    const detectedObjects = [];
+    //const detectedObjects = [];
+    this.max_x = -65535;
+    this.min_x = 65535;
 
     for (const id of Object.keys(this.AllStranaList)) {
       // 地表面の左端と右端を調べる
       const verticeList = this.AllStranaList[id].verticeList;
       for (const node of verticeList) {
-        max_x = Math.max(max_x, node.x);
-        min_x = Math.min(min_x, node.x);
+        this.max_x = Math.max(this.max_x, node.x);
+        this.min_x = Math.min(this.min_x, node.x);
       }
 
       // 同時に当たり判定のobjectを回収する
       const ThreeObject = this.AllStranaList[id].ThreeObject;
-      detectedObjects.push(ThreeObject);
+      this.detectedObjects.push(ThreeObject);
     }
+  }
 
-    for ( let x = min_x; x <= max_x; x += 0.1 ) {
+  // 地表面データの1次式を回収
+  public getGroundLinear () {
+
+    for ( let x = this.min_x; x <= this.max_x; x += 0.1 ) {
       x = Math.round(x * 10) / 10;
       // 当たり判定用の光線を作成
       const TopPos = new THREE.Vector3(x, 65535, 0.0);
@@ -274,16 +282,14 @@ export class ThreeStranaService {
       const ray = new THREE.Raycaster(TopPos, downVect.normalize());
 
       // 当たったobjectを検出する
-      const objs = ray.intersectObjects(detectedObjects, true);
+      const objs = ray.intersectObjects(this.detectedObjects, true);
       let min_distance = objs[0].distance;
       for ( let num = 0; num < objs.length; num++ ) {
         min_distance = Math.min(min_distance, objs[num].distance)
       }
       const y = 65535 - min_distance;
-      GroundLinear[x.toString()] = new THREE.Vector2(x, y);
+      this.groundLinear[x.toString()] = new THREE.Vector2(x, y);
     }
-
-    return GroundLinear;
   }
 
 }
