@@ -37,7 +37,8 @@ export class StranaService {
         name: "",
         gamma: "",
         cohesion: "",
-        fai: ""
+        fai: "",
+        //color: "",
       };
       this.soil.push(result);
     }
