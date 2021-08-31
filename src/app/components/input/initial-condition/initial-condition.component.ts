@@ -14,8 +14,8 @@ export class InitialConditionComponent implements OnInit {
   public dWidth: number;
   public floatP: number;
   public waterDif: number;
-  public diagonal: string;
-  public calcShow: string;
+  public diagonal: number;
+  public calcShow: number;
   public x0: number;
   public y0: number;
   public r0: number;
@@ -27,7 +27,7 @@ export class InitialConditionComponent implements OnInit {
     public data: InitialConditionService,
     private app: AppComponent,
     private three: ThreeService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.seismic = this.data.seimic;
@@ -44,7 +44,7 @@ export class InitialConditionComponent implements OnInit {
   ngOnDestroy() {
     this.data.seimic = this.seismic;
     this.data.dWidth = this.dWidth;
-    // this.data.floatP = this.floatP;
+    this.data.floatP = this.floatP;
     this.data.waterDif = this.waterDif;
     this.data.diagonal = this.diagonal;
     this.data.calcShow = this.calcShow;

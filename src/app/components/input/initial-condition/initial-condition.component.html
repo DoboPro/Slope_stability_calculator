@@ -2,7 +2,7 @@
     <div class="soilHorizon">
         <label>水平震度</label>:
         <div class="soilHorizon-input">
-            <input class="input" id="seimic" name="seimic" type="number" step="1" [(ngModel)]="data.seimic" />
+            <input class="input" id="seimic" name="seimic" type="number" step="1" [(ngModel)]="data.seimic"  />
         </div>
     </div>
     <div class="soilHorizon">
@@ -51,19 +51,19 @@
     <div class="soilHorizon">
         <label>分割円の中心初期値x0</label>:
         <div class="soilHorizon-input">
-            <input type="number" name="x0" [(ngModel)]="x0" />m
+            <input type="number" name="x0" [(ngModel)]="data.x0" />m
         </div>
     </div>
     <div class="soilHorizon">
         <label>分割円の中心初期値y0</label>:
         <div class="soilHorizon-input">
-            <input type="number" name="y0" [(ngModel)]="y0" />m
+            <input type="number" name="y0" [(ngModel)]="data.y0" />m
         </div>
     </div>
     <div class="soilHorizon">
         <label>すべり円の半径初期値r0</label>:
         <div class="soilHorizon-input">
-            <input type="number" name="r0" [(ngModel)]="r0" />m
+            <input type="number" name="r0" [(ngModel)]="data.r0" />m
         </div>
     </div>
 </form>
