@@ -24,7 +24,7 @@ export class NodeService {
     }
     // 対象データが無かった時に処理
     if (result == null) {
-      result = { id: index, x: '', y: '' };
+      result = { id: index, x: '', y: '',surface:'' };
       this.node.push(result);
     }
     return result;
@@ -42,6 +42,7 @@ export class NodeService {
         id: index,
         x: item.x === null ? '' : item.x.toFixed(3),
         y: item.y === null ? '' : item.y.toFixed(3),
+        surface:item.surface,
       };
       this.node.push(result);
     }
@@ -51,10 +52,12 @@ export class NodeService {
     const x: number = this.toNumber(item['x']);
     const y: number = this.toNumber(item['y']);
     const z: number = this.toNumber(item['z']);
+    const surface :boolean = false;
     return {
       x,
       y,
       z,
+      surface
     };
   }
 
@@ -69,9 +72,10 @@ export class NodeService {
 
       const key: string = row.id;
       jsonData[key] = {
+        id: this.toNumber(key),
         x: item.x == null ? empty : item.x,
         y: item.y == null ? empty : item.y,
-        surface: item.x == null && item.y == null ? empty : false,
+        surface: item.surface,
       };
     }
     return jsonData;

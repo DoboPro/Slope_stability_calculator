@@ -19,6 +19,8 @@ export class ThreeStranaService {
 
   public groundLinear: any;
 
+  public nodeData:any;
+
   public min_x: number;
   public max_x: number;
 
@@ -117,6 +119,7 @@ export class ThreeStranaService {
 
     // 地表面の座標を獲得する
     this.groundLinear = this.getGroundLinear();
+   
   }
 
   private create(vertice, ThreeObject) {
@@ -253,8 +256,10 @@ export class ThreeStranaService {
   // 地表面データの1次式を回収
   public getGroundLinear() {
     const GroundLinear = {};
+    let targetId:number;
     // const temp_GroundLinear = {};
-
+    this.node.node;
+    this.nodeData = Object.values(this.node.getNodeJson(0));
     this.max_x = -65535;
     this.min_x = 65535;
     const detectedObjects = [];
@@ -287,6 +292,13 @@ export class ThreeStranaService {
       }
       const y = 65535 - min_distance;
       GroundLinear[x.toString()] = new THREE.Vector2(x, y);
+      if( this.nodeData.find((v) => ((v.x === x) && (v.y === y)))){
+        let target = this.nodeData.find((v) => ((v.x === x) && (v.y === y)))
+        targetId = target.id - 1;
+        this.node.node[targetId].surface = true;
+        console.log("aaa");
+      };
+
     }
 
     return GroundLinear;

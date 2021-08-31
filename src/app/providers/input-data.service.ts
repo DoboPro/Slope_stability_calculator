@@ -46,9 +46,9 @@ export class InputDataService {
     const jsonData = {};
 
     const node: {} = this.node.getNodeJson(empty);
-    const surface: {} = this.surface.getSurfaceJsons(node);
-    if (Object.keys(surface).length > 0) {
-      jsonData['node'] = surface;
+    // const surface: {} = this.surface.getSurfaceJsons(node);
+    if (Object.keys(node).length > 0) {
+      jsonData['node'] = node;
     } else if (empty === 0) {
       jsonData['node'] = {};
     }
