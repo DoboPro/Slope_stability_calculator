@@ -32,6 +32,20 @@ export class ThreeResultService {
       this.scene.add(this.resultList);
 
     }
+
+    // オブジェクトを削除する
+    public clearData() {
+
+      if (this.resultList.children.length === 0) {
+        return;
+      }
+
+      for (const key of Object.keys(this.resultList.children)) {
+        const child = this.resultList.children[key];
+        child.parent.remove(child);
+      }
+
+    }
   
     public setResultData(circleData, circleNode) {
       this.resultList.name = 'resultList'
