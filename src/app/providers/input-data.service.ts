@@ -74,15 +74,6 @@ export class InputDataService {
       jsonData['load'] = {};
     }
 
-    // this.initialCondition.changeData();
-
-    const init:{} = this.initialCondition.getInitialConditionJson(empty);
-      if(Object.keys(init).length > 0){
-        jsonData['init'] = init;
-      }else if(empty === 0){
-        jsonData['init'] = {};
-      }
-
     return jsonData;
   }
 

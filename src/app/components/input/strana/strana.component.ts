@@ -112,8 +112,6 @@ export class StranaComponent implements OnInit {
         const row = range.rowIndx + 1;
         this.three.changeData("strana", row);
       }
-      // ここで地表面の1次式を入手
-      this.three.getGroundLinear();
     }
   };
 

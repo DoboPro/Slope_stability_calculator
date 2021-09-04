@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class InitialConditionService {
-  public initialCondition: any[];
+  public initialCondition!: any[];
 
   public floatP: number;
 
@@ -14,12 +14,12 @@ export class InitialConditionService {
 
   public waterDif = 0.1;
   // public diagonal: string[] = ['右上がり', '左上がり'];
-  public diagonal = 1;
+  public diagonal: string = '右上がり';
   // public calcShow: string[] = ['表示する', '表示しない'];
-  public calcShow = 1;
-  public x0 = 16;
-  public y0 = 16;
-  public r0 = 13;
+  public calcShow: string = '表示する';
+  public x0 = 15;
+  public y0 = 15;
+  public r0 = 14;
 
   constructor() {
     this.clear();
@@ -54,7 +54,7 @@ export class InitialConditionService {
   //   return result;
   // }
 
-  public getInitialConditionColumns(index: number): any {
+  public getInitialConditionColums(index: number): any {
     let result: any = null;
     for (const tmp of this.initialCondition) {
       if (tmp.id.toString() === index.toString()) {
@@ -80,38 +80,26 @@ export class InitialConditionService {
     return result;
   }
 
-  public getInitialConditionJson(empty: number = null) {
-    let jsonData: object = {};
-    jsonData = {
-      seimic: this.seimic,
-      dWidth: this.dWidth,
-      floatP: this.floatP,
-      waterDif: this.waterDif,
-      diagonal: this.diagonal,
-      calcShow: this.calcShow,
-      x0: this.x0,
-      y0: this.y0,
-      r0: this.r0
-    };
-
-    return jsonData;
-  }
-
   // ファイルを読み込む
   public setInitialConditionJson(jsonData: any): void {
-    if (!('init' in jsonData)) {
+    if (!('initialCondition' in jsonData)) {
       return;
     }
-    const json: any = jsonData['init'];
-    this.seimic = json.seismic === null ? '' : json.seimic;
-    this.dWidth = json.dWidth === null ? '' : json.dWidth;
-    // this.floatP = json.floatP === null ? '' : json.dWidth;
-    this.waterDif = json.waterDif === null ? '' : json.waterDif;
-    // this.calcShow = json.calcShow === null ? '' : json.calcShow;
-    this.x0 = json.x0 === null ? '' : json.x0;
-    this.y0 = json.y0 === null ? '' : json.y0;
-    this.r0 = json.r0 === null ? '' : json.r0;
-
+    const json: any = jsonData['initialCondition'];
+    for (const index of Object.keys(json)) {
+      const item = this.convertNumber(json[index]);
+      const result = {
+        seismic: item.seismic === null ? '' : item.seismic.toFixed(3),
+        dWidth: item.dWidth === null ? '' : item.dWidth.toFixed(0),
+        floatP: item.floatP === null ? '' : item.dWidth.toFixed(3),
+        waterDif: item.waterDif === null ? '' : item.waterDif.toFixed(3),
+        calcShow: item.calcShow === null ? '' : item.calcShow.toFixed(0),
+        x0: item.x0 === null ? '' : item.x0.toFixed(0),
+        y0: item.y0 === null ? '' : item.y0.toFixed(0),
+        r0: item.r0 === null ? '' : item.r0.toFixed(0),
+      };
+      this.initialCondition.push(result);
+    }
   }
 
   private convertNumber(item: any): any {
@@ -152,6 +140,4 @@ export class InitialConditionService {
     // }
     return result;
   }
-
-
 }
