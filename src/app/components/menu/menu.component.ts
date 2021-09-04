@@ -54,7 +54,7 @@ export class MenuComponent implements OnInit {
     private http: HttpClient,
     private three: ThreeService,
     private user: UserInfoService, // private helper:DataHelperModule
-    public safety: SafetyRatioService
+    public safety:SafetyRatioService
   ) {
     // this.loggedIn = this.user.loggedIn;
     this.fileName = '';
@@ -162,12 +162,11 @@ export class MenuComponent implements OnInit {
   }
 
   private post_compress(jsonData: {}, modalRef: NgbModalRef) {
-    const url =
-      'https://asia-northeast1-team-dobopro.cloudfunctions.net/SlopeStabilityCalculator-2';
+    const url = 'https://asia-northeast1-team-dobopro.cloudfunctions.net/SlopeStabilityCalculator';
 
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       }),
       //  'text'
     };
@@ -177,29 +176,29 @@ export class MenuComponent implements OnInit {
     // FileSaver.saveAs(blob, 'test.json');
     console.log(js);
 
-    this.http
-      .post(url, js, {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-        }),
-        responseType: 'text',
-      })
-      .toPromise()
-      .then(
-        (response) => {
+    this.http.post(
+      url,
+      js,
+      {headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      responseType: 'text'
+    }).toPromise()
+      .then(response => {
+    
           // alert('解析に失敗しました\nエラーメッセージ：' + response);
-          // this.router.navigate(['/condition']);
-          const re1 = response;
-          const obj = JSON.parse(re1);
-
+          // this.router.navigate(['/condition']);  
+          const re1 = response;    
+          const obj = JSON.parse(re1);  
+       
           const minX = obj['minX'];
           const minY = obj['minY'];
           const minR = obj['minR'];
-          const reNode = obj['reNode'];
+          const reNode = obj["reNode"];
 
-          this.safety.result(minX, minY, minR, reNode);
+          this.safety.result(minX,minY,minR,reNode);
 
-          this.ResultData.loadResultData(minX, minY, minR, reNode);
+          this.ResultData.loadResultData(minX,minY,minR,reNode);
 
           modalRef.close();
           // const  = response['y'];
@@ -207,19 +206,16 @@ export class MenuComponent implements OnInit {
           // this.y= response['y'];
           // this.R = response['R'];
           // this.F= response['F'];
-        },
-        (error) => {
-          alert(
-            '解析に失敗しました\n通信状態：' +
-              error.statusText +
-              '\nエラーメッセージ：' +
-              error.message
-          );
+          
+      },
+        error => {
+          alert('解析に失敗しました\n通信状態：' + error.statusText + '\nエラーメッセージ：' + error.message);
           console.log(error);
           // this.router.navigate(['/condition']);
         }
       );
   }
+
 
   // // ログイン関係
   // logIn(): void {
@@ -258,23 +254,23 @@ export class MenuComponent implements OnInit {
   // }
 
   public contentsDailogShow(id: string): void {
-    this.deactiveButtons();
-    document.getElementById(id)!.classList.add('active');
-    this.user.isContentsDailogShow = true;
-    //this.setDialogHeight();
-  }
+  this.deactiveButtons();
+  document.getElementById(id)!.classList.add('active');
+  this.user.isContentsDailogShow = true;
+  //this.setDialogHeight();
+}
 
-  // アクティブになっているボタンを全て非アクティブにする
-  deactiveButtons() {
-    for (let i = 0; i <= 13; i++) {
-      const data = document.getElementById(i + '');
-      if (data != null) {
-        if (data.classList.contains('active')) {
-          data.classList.remove('active');
-        }
+// アクティブになっているボタンを全て非アクティブにする
+deactiveButtons() {
+  for (let i = 0; i <= 13; i++) {
+    const data = document.getElementById(i + '');
+    if (data != null) {
+      if (data.classList.contains('active')) {
+        data.classList.remove('active');
       }
     }
   }
+}
 
   //
   // public setDimension(dim: number){
@@ -319,9 +315,9 @@ export class MenuComponent implements OnInit {
 
   // テスト ---------------------------------------------
   private saveResult(text: string): void {
-    const blob = new window.Blob([text], { type: 'text/plain' });
-    FileSaver.saveAs(blob, 'frameWebResult.json');
-  }
+  const blob = new window.Blob([text], { type: 'text/plain' });
+  FileSaver.saveAs(blob, 'frameWebResult.json');
+}
 
   //解析結果ファイルを開く
   // resultopen(evt) {
