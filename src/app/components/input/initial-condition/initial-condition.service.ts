@@ -17,9 +17,9 @@ export class InitialConditionService {
   public diagonal: string = '右上がり';
   // public calcShow: string[] = ['表示する', '表示しない'];
   public calcShow: string = '表示する';
-  public x0 = 15;
-  public y0 = 15;
-  public r0 = 14;
+  public x0 = 16;
+  public y0 = 16;
+  public r0 = 13;
 
   constructor() {
     this.clear();
@@ -78,6 +78,22 @@ export class InitialConditionService {
       this.initialCondition.push(result);
     }
     return result;
+  }
+
+  public getInitialConditionJson(empty: number = null) {
+    let jsonData: object = {};
+    jsonData = {
+      seimic: this.seimic,
+      dWidth: this.dWidth,
+      floatP: this.floatP,
+      waterDif: this.waterDif,
+      diagonal: this.diagonal,
+      calcShow: this.calcShow,
+      x0: this.x0,
+      y0: this.y0,
+      r0: this.r0,
+    };
+    return jsonData;
   }
 
   // ファイルを読み込む

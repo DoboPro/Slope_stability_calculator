@@ -10,6 +10,7 @@ import { SceneService } from './scene.service';
 
 import * as THREE from 'three';
 import { DataHelperModule } from 'src/app/providers/data-helper.module';
+import { ThreeResultService } from './geometry/three-result.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,8 @@ export class ThreeService {
     private soil: ThreeSoilService,
     private strana: ThreeStranaService,
     private waterlevel: ThreeWaterlevelService,
-    private load: ThreeLoadService
+    private load: ThreeLoadService,
+    private result: ThreeResultService
   ) {}
 
   //////////////////////////////////////////////////////
@@ -37,6 +39,8 @@ export class ThreeService {
   //////////////////////////////////////////////////////
   // ファイルを開く処理する
   public fileload(): void {
+    // 既存の計算結果を削除
+    this.result.clearData();
     // ファイルを読み込んだ
     this.node.changeData();
     this.strana.resetData();
@@ -50,25 +54,31 @@ export class ThreeService {
   public changeData(mode: string = '', index: number = 0): void {
     switch (mode) {
       case 'node':
-        const jsonData = this.node.changeData()
-        this.strana.changeNode( jsonData );
-        this.load.changeNode( jsonData );
+        const jsonData = this.node.changeData();
+        this.strana.changeNode(jsonData);
+        this.load.changeNode(jsonData);
+        this.result.clearData();
         break;
 
       case 'soil':
         this.soil.changeCase(index);
+        this.result.clearData();
         break;
 
       case 'strana':
         this.strana.changeData(index);
+        this.result.clearData();
         break;
 
       case 'waterlevel':
         this.waterlevel.changeData();
+        this.result.clearData();
         break;
 
-      case "load":
+      case 'load':
+        this.strana.getGroundLinear();
         this.load.changeData();
+        this.result.clearData();
         break;
 
       default:
@@ -80,6 +90,10 @@ export class ThreeService {
     this.scene.render();
 
     this.currentIndex = index;
+  }
+
+  public getGroundLinear() {
+    this.strana.getGroundLinear();
   }
 
   //////////////////////////////////////////////////////

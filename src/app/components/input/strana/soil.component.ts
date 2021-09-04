@@ -1,28 +1,64 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Routes, RouterModule, CanActivate } from '@angular/router';
-import { StranaService } from "./strana.service";
-import { ThreeService } from "../../three/three.service";
+import { StranaService } from './strana.service';
+import { ThreeService } from '../../three/three.service';
 // import { DataHelperModule } from "../../../providers/data-helper.module";
-import { SheetComponent } from "../sheet/sheet.component";
-import pq from "pqgrid";
-import { AppComponent } from "src/app/app.component";
-
+import { SheetComponent } from '../sheet/sheet.component';
+import pq from 'pqgrid';
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   selector: 'app-soil',
   templateUrl: './soil.component.html',
-  styleUrls: ['./soil.component.scss', "../../../app.component.scss",]
+  styleUrls: ['./soil.component.scss', '../../../app.component.scss'],
 })
 export class SoilComponent implements OnInit {
   @ViewChild('grid') grid: SheetComponent;
 
   private dataset = [];
 
+  private initSelect0 = ['赤', '青', '緑'];
+
   private columnHeaders = [
-    { title: "地層名", dataType: "string", dataIndx: "name", sortable: false, width: 250 },
-    { title: "γ", dataType: "float", format: "#.0", dataIndx: "gamma", sortable: false, width: 50 },
-    { title: "c", dataType: "float", format: "#.0", dataIndx: "cohesion", sortable: false, width: 50 },
-    { title: "φ", dataType: "float", format: "#.0", dataIndx: "fai", sortable: false, width: 50 },
+    {
+      title: '地層名',
+      dataType: 'string',
+      dataIndx: 'name',
+      sortable: false,
+      width: 250,
+    },
+    {
+      title: 'γ',
+      dataType: 'float',
+      format: '#.0',
+      dataIndx: 'gamma',
+      sortable: false,
+      width: 50,
+    },
+    {
+      title: 'c',
+      dataType: 'float',
+      format: '#.0',
+      dataIndx: 'cohesion',
+      sortable: false,
+      width: 50,
+    },
+    {
+      title: 'φ',
+      dataType: 'float',
+      format: '#.0',
+      dataIndx: 'fai',
+      sortable: false,
+      width: 50,
+    },
+    {
+      title: '色',
+      dataType: 'select',
+      dataIndx: 'color',
+      sortTable: false,
+      width: 50,
+      editor: { type: 'select', options: this.initSelect0 },
+    },
   ];
 
   private ROWS_COUNT = 15;
@@ -31,16 +67,17 @@ export class SoilComponent implements OnInit {
   constructor(
     private data: StranaService,
     private app: AppComponent,
-    private three: ThreeService) {
-      // this.loadData(this.ROWS_COUNT);
-     }
+    private three: ThreeService
+  ) {
+    // this.loadData(this.ROWS_COUNT);
+  }
 
   ngOnInit(): void {
     this.ROWS_COUNT = this.rowsCount();
     // three.js にモードの変更を通知する
     // this.three.ChangeMode("node");
 
-    this.three.ChangeMode("soil");
+    this.three.ChangeMode('soil');
     // this.three.ChangePage(1);
   }
 
@@ -68,18 +105,18 @@ export class SoilComponent implements OnInit {
     showTop: false,
     reactive: true,
     sortable: false,
-    locale: "jp",
+    locale: 'jp',
     height: this.tableHeight(),
     numberCell: {
       show: true, // 行番号
-      width: 45
+      width: 45,
     },
     colModel: this.columnHeaders,
     animModel: {
-      on: true
+      on: true,
     },
     dataModel: {
-      data: this.dataset
+      data: this.dataset,
     },
     beforeTableView: (evt, ui) => {
       const finalV = ui.finalV;
@@ -94,7 +131,7 @@ export class SoilComponent implements OnInit {
     },
     selectEnd: (evt, ui) => {
       const range = ui.selection.iCells.ranges;
-      const row = range[0].r1 ;
+      const row = range[0].r1;
       const caseNo = range[0].c1;
       this.three.ChangePage(caseNo);
     },
@@ -103,10 +140,9 @@ export class SoilComponent implements OnInit {
       for (let i = 0; i < ui.updateList.length; i++) {
         target = ui.updateList[i];
       }
-      this.three.changeData("soil", target.rowIndx + 1)
-    }
+      this.three.changeData('soil', target.rowIndx + 1);
+    },
   };
 
   width = 600;
-
 }

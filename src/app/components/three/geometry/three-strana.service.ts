@@ -15,6 +15,12 @@ export class ThreeStranaService {
   private currentIndex_child1: string;
   private currentIndex_child2: string;
 
+  private detectedObjects: any;
+  private max_x: number;
+  private min_x: number;
+
+  public nodeData: any;
+
   private organizationList;
 
   public groundLinear: any;
@@ -26,6 +32,8 @@ export class ThreeStranaService {
     private scene: SceneService
   ) {
     this.AllStranaList = this.soil.AllStranaList;
+    this.groundLinear = {};
+    this.detectedObjects = [];
   }
 
   // 表示ケースを変更する
@@ -38,10 +46,16 @@ export class ThreeStranaService {
       return;
     }
 
+    const soilData = this.strana.getSoilJson();
     const stranaData = this.strana.getOrganizationJson(0, this.currentIndex);
-    this.changeStrana(row, stranaData[this.currentIndex], nodeData);
+    this.changeStrana(
+      row,
+      stranaData[this.currentIndex],
+      nodeData,
+      soilData[this.currentIndex]
+    );
 
-    this.scene.render();
+    // this.scene.render();
 
     return;
   }
@@ -59,6 +73,7 @@ export class ThreeStranaService {
     }
     // this.soil.currentIndexを1に戻すために実行
     this.soil.changeCase(1);
+    this.getGroundLinear();
   }
 
   // ケースを追加する
@@ -80,7 +95,7 @@ export class ThreeStranaService {
   //   this.scene.add(ThreeObject); // シーンに追加
   // }
 
-  private changeStrana(row, stranaData, nodeData) {
+  private changeStrana(row, stranaData, nodeData, soilData) {
     const ThreeObject = this.AllStranaList[this.currentIndex].ThreeObject;
     if (ThreeObject.children.length >= 1) {
       while (ThreeObject.children.length > 0) {
@@ -110,16 +125,24 @@ export class ThreeStranaService {
     if (verticeList.length <= 2) return;
     this.AllStranaList[this.currentIndex].verticeList = verticeList;
 
-    this.create(verticeList, ThreeObject);
+    // this.create(verticeList, ThreeObject,color);
+    // とりあえずランダムに色を設定する
+    let color = new THREE.Color(0x000000);
+    if (soilData.color === undefined) {
+      const a = Math.random();
+      color = new THREE.Color(0x00ffff * a);
+    } else {
+      color = new THREE.Color(soilData.color);
+    }
+    this.create(verticeList, ThreeObject, color);
 
     // 地表面の座標を獲得する
-//     this.groundLinear = this.getGroundLinear();
-  
-    this.getDetectedObjects();
+    //     this.groundLinear = this.getGroundLinear();
 
+    this.getDetectedObjects();
   }
 
-  private create(vertice, ThreeObject) {
+  private create(vertice, ThreeObject, color) {
     const stranaShape = new THREE.Shape();
 
     stranaShape.moveTo(0, 0);
@@ -136,18 +159,18 @@ export class ThreeStranaService {
       depth: 0.1,
       bevelEnabled: false,
     };
-// <<<<<<< mizutani_#27_2
-//     const geometry = new THREE.ExtrudeGeometry(stranaShape, extrudeSettings);
-//     let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-//     if (this.currentIndex === '2') {
-//       material = new THREE.MeshBasicMaterial({ color: 0x00af30 });
-//     } else if (this.currentIndex === '3') {
-//       material = new THREE.MeshBasicMaterial({ color: 0x006f60 });
-//     } else if (this.currentIndex === '4') {
-//       material = new THREE.MeshBasicMaterial({ color: 0x003f90 });
-//     }
-// =======
-    const geometry = new THREE.ExtrudeGeometry( stranaShape, extrudeSettings );
+    // <<<<<<< mizutani_#27_2
+    //     const geometry = new THREE.ExtrudeGeometry(stranaShape, extrudeSettings);
+    //     let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    //     if (this.currentIndex === '2') {
+    //       material = new THREE.MeshBasicMaterial({ color: 0x00af30 });
+    //     } else if (this.currentIndex === '3') {
+    //       material = new THREE.MeshBasicMaterial({ color: 0x006f60 });
+    //     } else if (this.currentIndex === '4') {
+    //       material = new THREE.MeshBasicMaterial({ color: 0x003f90 });
+    //     }
+    // =======
+    const geometry = new THREE.ExtrudeGeometry(stranaShape, extrudeSettings);
     const material = new THREE.MeshBasicMaterial({ color: color });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -158,7 +181,6 @@ export class ThreeStranaService {
 
     // ここで当たり判定を行う
     this.detectJudge(mesh, ThreeObject);
-
   }
 
   // ケースの荷重図を消去する
@@ -189,8 +211,8 @@ export class ThreeStranaService {
       }
       this.changeData(0, targetID);
     }
+    this.getGroundLinear();
   }
-
 
   // 当たり判定を行う
   private detectJudge(mesh, ThreeObject) {
@@ -218,41 +240,46 @@ export class ThreeStranaService {
       // 全て当たっていれば、オブジェクト当たり判定はtrue(当たっている)
       // 一つでも当たっていなければ、オブジェクト当たり判定はfalse(当たっていない)
       for (let i = 0; i < 8; i++) {
-        const delta = Math.PI / 4 * i + 0.0001; // 0.0001は角度微調整用の定数(Math.atan(1/10000))
+        const delta = (Math.PI / 4) * i + 0.0001; // 0.0001は角度微調整用の定数(Math.atan(1/10000))
         const delta_x = 0.0001 * Math.cos(delta);
         const delta_y = 0.0001 * Math.sin(delta);
 
         // 当たり判定用の光線を作成
-        const TopPos = new THREE.Vector3(vertice.x + delta_x, vertice.y + delta_y, 255)
-        const downVect = new THREE.Vector3(0,0,-1); 
+        const TopPos = new THREE.Vector3(
+          vertice.x + delta_x,
+          vertice.y + delta_y,
+          255
+        );
+        const downVect = new THREE.Vector3(0, 0, -1);
         const ray = new THREE.Raycaster(TopPos, downVect.normalize());
 
         // 当たったobjectを検出する
         const objs = ray.intersectObjects(detectedObjects, true);
-        if (objs.length >= 2) { //自身と既存のオブジェクトが検出されたら当たっているとみなす
+        if (objs.length >= 2) {
+          //自身と既存のオブジェクトが検出されたら当たっているとみなす
           // ここで既存のオブジェクトが2重に検出されている可能性有（バグ）
           pointjudge = true;
           break;
         }
       }
       // 全てのpointjudgeがfalse(全ての点で当たっていない)であれば、何もしない。
-      // pointjudgeが一つでもtrueであれば、何かする。 
+      // pointjudgeが一つでもtrueであれば、何かする。
       if (pointjudge) {
         //当たり判定の結果trueを受けて、何かする判定をする。そのためのフラグを作る
         judge = true;
         break;
       }
     }
-    if (judge) { // 当たっているので何かする。
+    if (judge) {
+      // 当たっているので何かする。
       const message = mesh.parent.name + '番の地層が不適切に作成されました';
-      mesh.material.color.r = 1.00;
+      mesh.material.color.r = 1.0;
       alert(message);
     }
   }
 
   // 地表面データの1次式を回収
-  public getDetectedObjects () {
-
+  public getDetectedObjects() {
     //const detectedObjects = [];
     this.max_x = -65535;
     this.min_x = 65535;
@@ -267,43 +294,39 @@ export class ThreeStranaService {
 
       // 同時に当たり判定のobjectを回収する
       const ThreeObject = this.AllStranaList[id].ThreeObject;
-      detectedObjects.push(ThreeObject);
+      this.detectedObjects.push(ThreeObject);
     }
   }
 
   // 地表面データの1次式を回収
-  public getGroundLinear () {
-    let targetId:number;
+  public getGroundLinear() {
+    let targetId: number;
     // const temp_GroundLinear = {};
     this.node.node;
     this.nodeData = Object.values(this.node.getNodeJson(0));
 
-    for ( let x = this.min_x; x <= this.max_x; x += 0.1 ) {
-
+    for (let x = this.min_x; x <= this.max_x; x += 0.1) {
       x = Math.round(x * 10) / 10;
       // 当たり判定用の光線を作成
       const TopPos = new THREE.Vector3(x, 65535, 0.0);
-      const downVect = new THREE.Vector3(0,-1,0); 
+      const downVect = new THREE.Vector3(0, -1, 0);
       const ray = new THREE.Raycaster(TopPos, downVect.normalize());
 
       // 当たったobjectを検出する
-      const objs = ray.intersectObjects(detectedObjects, true);
+      const objs = ray.intersectObjects(this.detectedObjects, true);
       let min_distance = objs[0].distance;
-      for ( let num = 0; num < objs.length; num++ ) {
-        min_distance = Math.min(min_distance, objs[num].distance)
+      for (let num = 0; num < objs.length; num++) {
+        min_distance = Math.min(min_distance, objs[num].distance);
       }
       const y = 65535 - min_distance;
 
       this.groundLinear[x.toString()] = new THREE.Vector2(x, y);
-      if( this.nodeData.find((v) => ((v.x === x) && (v.y === y)))){
-        let target = this.nodeData.find((v) => ((v.x === x) && (v.y === y)))
+      if (this.nodeData.find((v) => v.x === x && v.y === y)) {
+        let target = this.nodeData.find((v) => v.x === x && v.y === y);
         targetId = target.id - 1;
         this.node.node[targetId].surface = true;
-        console.log("aaa");
-      };
+        console.log('aaa');
+      }
     }
-
-    return GroundLinear;
   }
-
 }

@@ -1,36 +1,62 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Routes, RouterModule, CanActivate } from '@angular/router';
 // import { InputStranaService } from "./input-load.service";
-import { DataHelperModule } from "../../../providers/data-helper.module";
-import { ThreeService } from "../../three/three.service";
-import { SheetComponent } from "../sheet/sheet.component";
-import pq from "pqgrid";
-import { AppComponent } from "src/app/app.component";
+import { DataHelperModule } from '../../../providers/data-helper.module';
+import { ThreeService } from '../../three/three.service';
+import { SheetComponent } from '../sheet/sheet.component';
+import pq from 'pqgrid';
+import { AppComponent } from 'src/app/app.component';
 import { StranaService } from './strana.service';
 
 @Component({
   selector: 'app-strana',
   templateUrl: './strana.component.html',
-  styleUrls: ['./strana.component.scss', '../../../app.component.scss']
+  styleUrls: ['./strana.component.scss', '../../../app.component.scss'],
 })
 export class StranaComponent implements OnInit {
-  @ViewChild("grid") grid: SheetComponent;
+  @ViewChild('grid') grid: SheetComponent;
 
   public strana_name: string;
   private dataset = [];
   private page = 1;
 
   private columnHeaders = [
-    { title: "節点番号", dataType: "integer", dataIndx: "nodeNum", sortable: false, width: 105 },
-    { title: "X", dataType: "float", format: "#.000", dataIndx: "X", sortable: false, width: 105, editable: false, style: { "background": "#dae6f0" } },
-    { title: "Y", dataType: "float", format: "#.000", dataIndx: "y", sortable: false, width: 105, editable: false, style: { "background": "#dae6f0" } },
+    {
+      title: '節点番号',
+      dataType: 'integer',
+      dataIndx: 'nodeNum',
+      sortable: false,
+      width: 105,
+    },
+    {
+      title: 'X',
+      dataType: 'float',
+      format: '#.000',
+      dataIndx: 'X',
+      sortable: false,
+      width: 105,
+      editable: false,
+      style: { background: '#dae6f0' },
+    },
+    {
+      title: 'Y',
+      dataType: 'float',
+      format: '#.000',
+      dataIndx: 'y',
+      sortable: false,
+      width: 105,
+      editable: false,
+      style: { background: '#dae6f0' },
+    },
   ];
 
   private ROWS_COUNT = 15;
   public inner_width = 300;
-  constructor(private data: StranaService, private app: AppComponent, private three: ThreeService) {
-
-  }
+  constructor(
+    private data: StranaService,
+    private app: AppComponent,
+    private three: ThreeService
+  ) {}
 
   ngOnInit(): void {
     this.ROWS_COUNT = this.rowsCount();
@@ -40,7 +66,6 @@ export class StranaComponent implements OnInit {
     // this.three.ChangeMode("strana");
     // this.three.ChangePage(1);
   }
-
 
   // 　pager.component からの通知を受け取る
   onReceiveEventFromChild(eventData: number) {
@@ -76,11 +101,11 @@ export class StranaComponent implements OnInit {
     showTop: false,
     reactive: true,
     sortable: false,
-    locale: "jp",
+    locale: 'jp',
     height: this.tableHeight(),
     numberCell: {
       show: true, // 行番号
-      width: 45
+      width: 45,
     },
     colModel: this.columnHeaders,
     animModel: {
@@ -104,18 +129,17 @@ export class StranaComponent implements OnInit {
       const range = ui.selection.iCells.ranges;
       const row = range[0].r1 + 1;
       const column = range[0].c1;
-      this.three.selectChange("strana", row, column);
+      this.three.selectChange('strana', row, column);
     },
     change: (evt, ui) => {
-
       for (const range of ui.updateList) {
         const row = range.rowIndx + 1;
-        this.three.changeData("strana", row);
+        this.three.changeData('strana', row);
       }
-    }
+      //ここで地表面の1次式を導入する
+      this.three.getGroundLinear();
+    },
   };
 
   width = 450;
-
-
 }
