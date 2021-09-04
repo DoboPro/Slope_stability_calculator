@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class NodeService {
+
   public node: any[];
 
   constructor() {
@@ -24,11 +25,12 @@ export class NodeService {
     }
     // 対象データが無かった時に処理
     if (result == null) {
-      result = { id: index, x: '', y: '', surface: '' };
+      result = { id: index, x: '', y: '' };
       this.node.push(result);
     }
     return result;
   }
+
 
   // ファイルを読み込む
   public setNodeJson(jsonData: any): void {
@@ -40,9 +42,8 @@ export class NodeService {
       const item = this.convertNumber(json[index]);
       const result = {
         id: index,
-        x: item.x === null ? '' : item.x.toFixed(3),
-        y: item.y === null ? '' : item.y.toFixed(3),
-        surface: item.surface,
+        x: (item.x === null) ? '' : item.x.toFixed(3),
+        y: (item.y === null) ? '' : item.y.toFixed(3)
       };
       this.node.push(result);
     }
@@ -52,19 +53,19 @@ export class NodeService {
     const x: number = this.toNumber(item['x']);
     const y: number = this.toNumber(item['y']);
     const z: number = this.toNumber(item['z']);
-    const surface: boolean = item['surface'];
     return {
       x,
       y,
-      z,
-      surface,
+      z
     };
   }
 
-  public getNodeJson(empty: number = null): object {
+  public getNodeJson(empty: number = null ): object {
+
     const jsonData: object = {};
 
     for (const row of this.node) {
+
       const item = this.convertNumber(row);
       if (item.x == null && item.y == null) {
         continue;
@@ -72,10 +73,8 @@ export class NodeService {
 
       const key: string = row.id;
       jsonData[key] = {
-        id: this.toNumber(key),
-        x: item.x == null ? empty : item.x,
-        y: item.y == null ? empty : item.y,
-        surface: item.surface,
+        x: (item.x == null) ? empty : item.x,
+        y: (item.y == null) ? empty : item.y,
       };
     }
     return jsonData;
