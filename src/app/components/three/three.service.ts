@@ -6,7 +6,6 @@ import { ThreeNodeService } from './geometry/three-node.service';
 import { ThreeSoilService } from './geometry/three-soil.service';
 import { ThreeStranaService } from './geometry/three-strana.service';
 import { ThreeWaterlevelService } from './geometry/three-waterlevel.service';
-import { ThreeResultService } from './geometry/three-result.service';
 import { SceneService } from './scene.service';
 
 import * as THREE from 'three';
@@ -25,8 +24,7 @@ export class ThreeService {
     private soil: ThreeSoilService,
     private strana: ThreeStranaService,
     private waterlevel: ThreeWaterlevelService,
-    private load: ThreeLoadService,
-    private result: ThreeResultService,
+    private load: ThreeLoadService
   ) {}
 
   //////////////////////////////////////////////////////
@@ -39,8 +37,6 @@ export class ThreeService {
   //////////////////////////////////////////////////////
   // ファイルを開く処理する
   public fileload(): void {
-    // 既存の計算結果を削除
-    this.result.clearData();
     // ファイルを読み込んだ
     this.node.changeData();
     this.strana.resetData();
@@ -57,28 +53,22 @@ export class ThreeService {
         const jsonData = this.node.changeData()
         this.strana.changeNode( jsonData );
         this.load.changeNode( jsonData );
-        this.result.clearData();
         break;
 
       case 'soil':
         this.soil.changeCase(index);
-        this.result.clearData();
         break;
 
       case 'strana':
         this.strana.changeData(index);
-        this.result.clearData();
         break;
 
       case 'waterlevel':
         this.waterlevel.changeData();
-        this.result.clearData();
         break;
 
       case "load":
-        this.strana.getGroundLinear();
         this.load.changeData();
-        this.result.clearData();
         break;
 
       default:
@@ -91,13 +81,6 @@ export class ThreeService {
 
     this.currentIndex = index;
   }
-
-  // 地表面データを入手
-  public getGroundLinear() {
-
-    this.strana.getGroundLinear();
-
-  };
 
   //////////////////////////////////////////////////////
   // データの選択を処理する

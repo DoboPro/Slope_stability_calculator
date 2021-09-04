@@ -80,8 +80,6 @@ export class InputDataService {
       }else if(empty === 0){
         jsonData['init'] = {};
       }
-
-
     return jsonData;
   }
 

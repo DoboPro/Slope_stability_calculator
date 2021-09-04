@@ -18,27 +18,11 @@ export class SoilComponent implements OnInit {
 
   private dataset = [];
 
- private initSelect0 = [ "赤", "青", "緑" ];
-   /* private initSelect = { "赤": 0xff0000, "青" : 0x0000ff, "緑": 0x00ff00 };
-  private initSelect2 = [{ 0xff0000: "赤", 0x0000ff: "青", 0x00ff00: "緑" }];
-  private initSelect3 = [ { color: "red", code: 0xff0000, cls: 0xff0000}, 
-                          { color: "blue", code: 0x0000ff, cls: 0xff0000},
-                          { color: "green", code: 0x00ff00, cls: 0xff0000} ]; */
-
   private columnHeaders = [
     { title: "地層名", dataType: "string", dataIndx: "name", sortable: false, width: 250 },
     { title: "γ", dataType: "float", format: "#.0", dataIndx: "gamma", sortable: false, width: 50 },
     { title: "c", dataType: "float", format: "#.0", dataIndx: "cohesion", sortable: false, width: 50 },
     { title: "φ", dataType: "float", format: "#.0", dataIndx: "fai", sortable: false, width: 50 },
-    { title: "色", dataType: "select", dataIndx: "color", sortable: false, width: 50, //},
-       editor: { type: "select",  
-               /*  mapIndices: { color: "color", code: "code" },
-                lavelIndx: 'color', 
-                valueIndx: 'code', 
-                prepend: { "" : "" }, */
-                options: this.initSelect0,
-              } 
-    },
   ];
 
   private ROWS_COUNT = 15;
