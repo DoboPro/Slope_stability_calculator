@@ -77,7 +77,7 @@ export class MenuComponent implements OnInit {
     this.app.dialogClose(); // 現在表示中の画面を閉じる
     this.InputData.clear();
     // this.ResultData.clear();
-    // this.three.ClearData();
+    this.three.ClearData();
     this.fileName = '斜面の安定計算ver 0.0.1';
   }
 
@@ -86,7 +86,7 @@ export class MenuComponent implements OnInit {
     this.app.dialogClose(); // 現在表示中の画面を閉じる
     this.InputData.clear();
     // this.ResultData.clear();
-    // this.three.ClearData();
+    this.three.ClearData();
     // this.countArea.clear();
     const modalRef = this.modalService.open(WaitDialogComponent);
 

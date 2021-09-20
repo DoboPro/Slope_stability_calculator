@@ -36,6 +36,7 @@ export class ThreeWaterlevelService {
 
       //this.geometry = new THREE.SphereBufferGeometry(1);
       this.waterlevelList = new THREE.Object3D();
+      this.waterlevelList.name = 'waterlevelList';
       // this.ClearData();
       this.scene.add(this.waterlevelList);
       this.currentIndex = "0";
@@ -81,7 +82,7 @@ export class ThreeWaterlevelService {
     const jsonData = this.waterlevel.getWaterLevelJson(0);
     const jsonKeys = Object.keys(jsonData);
     if (jsonKeys.length < 3) {
-      this.ClearData();
+      this.clearData();
       return;
     }
 
@@ -196,14 +197,14 @@ export class ThreeWaterlevelService {
   
   
   // データをクリアする
-  public ClearData(): void {
-    for (const mesh of this.waterlevelList.children) {
+  public clearData(): void {
+    /* for (const mesh of this.waterlevelList.children) {
       // 文字を削除する
       while (mesh.children.length > 0) {
         const object = mesh.children[0];
         object.parent.remove(object);
       }
-    }
+    } */
     // オブジェクトを削除する
     this.waterlevelList.children = new Array();
     // this.nodeList = new Array();

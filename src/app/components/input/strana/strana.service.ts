@@ -37,7 +37,8 @@ export class StranaService {
         name: "",
         gamma: "",
         cohesion: "",
-        fai: ""
+        fai: "",
+        color: "",
       };
       this.soil.push(result);
     }
@@ -93,13 +94,15 @@ export class StranaService {
       const _gamma: string = "gamma" in item1 ? item1["gamma"] : "";
       const _cohesion: string = "cohesion" in item1 ? item1["cohesion"] : "";
       const _fai: string = "fai" in item1 ? item1["fai"] : "";
+      const _color: string = "color" in item1 ? item1["color"] : "";
 
       this.soil.push({
         id: index,
         name: _name,
         gamma: _gamma,
         cohesion: _cohesion,
-        fai: _fai
+        fai: _fai,
+        color: _color,
       });
 
       if ("organization" in item1) {
@@ -179,13 +182,15 @@ export class StranaService {
       const gamma = this.toNumber(tmp["gamma"]);
       const cohesion = this.toNumber(tmp["cohesion"]);
       const fai = this.toNumber(tmp["fai"]);
+      const color = this.toNumber(tmp["color"]);
 
 
       if (
         name === "" &&
         gamma == null &&
         cohesion == null &&
-        fai == null
+        fai == null &&
+        color == null
       ) {
         continue;
       }
@@ -196,6 +201,7 @@ export class StranaService {
         gamma: gamma == null ? empty : gamma,
         cohesion: cohesion == null ? empty : cohesion,
         fai: fai == null ? empty : fai,
+        color: fai == null ? empty : color,
         name: name == null ? empty : name,
       }
 

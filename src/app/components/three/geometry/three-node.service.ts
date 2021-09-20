@@ -36,7 +36,8 @@ export class ThreeNodeService {
     private node: NodeService) {
     this.geometry = new THREE.SphereBufferGeometry(1);
     this.nodeList = new THREE.Object3D();
-    this.ClearData();
+    this.nodeList.name = 'nodeList';
+    this.clearData();
     this.scene.add(this.nodeList);
     this.currentIndex = null;
 
@@ -71,7 +72,7 @@ export class ThreeNodeService {
     const jsonData = this.node.getNodeJson(0);
     const jsonKeys = Object.keys(jsonData);
     if (jsonKeys.length <= 0) {
-      this.ClearData();
+      this.clearData();
       return null;
     }
 
@@ -159,7 +160,7 @@ export class ThreeNodeService {
   }
 
   // データをクリアする
-  public ClearData(): void {
+  public clearData(): void {
     for (const mesh of this.nodeList.children) {
       // 文字を削除する
       while (mesh.children.length > 0) {
@@ -182,7 +183,7 @@ export class ThreeNodeService {
     const jsonData = this.node.getNodeJson(0);
     const jsonKeys = Object.keys(jsonData);
     if (jsonKeys.length <= 0) {
-      this.ClearData();
+      this.clearData();
       return;
     }
 

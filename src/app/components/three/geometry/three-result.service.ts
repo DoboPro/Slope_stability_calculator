@@ -30,6 +30,7 @@ export class ThreeResultService {
     private waterlevel: WaterlevelService
   ) {
     this.resultList = new THREE.Object3D();
+    this.resultList.name = 'resultList';
     this.scene.add(this.resultList);
   }
 
