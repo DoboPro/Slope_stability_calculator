@@ -39,7 +39,8 @@ export class ThreeLoadService {
               private strana: ThreeStranaService) {
     this.geometry = new THREE.SphereBufferGeometry(1);
     this.loadList = new THREE.Object3D();
-    this.ClearData();
+    this.loadList.name = 'loadList';
+    this.clearData();
     this.scene.add(this.loadList);
     this.currentIndex = null;
 
@@ -74,7 +75,7 @@ export class ThreeLoadService {
     const jsonData = this.load.getloadJson(0);
     const jsonKeys = Object.keys(jsonData);
     if (jsonKeys.length <= 0) {
-      this.ClearData();
+      this.clearData();
       return null;
     }
     let maxLoadAmount: number = 0;
@@ -157,7 +158,7 @@ export class ThreeLoadService {
     }
 
   // データをクリアする
-  public ClearData(): void {
+  public clearData(): void {
     for (const mesh of this.loadList.children) {
       // 文字を削除する
       while (mesh.children.length > 0) {

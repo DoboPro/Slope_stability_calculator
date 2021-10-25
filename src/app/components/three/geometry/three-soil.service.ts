@@ -60,6 +60,17 @@ export class ThreeSoilService {
     this.scene.render();
   }
 
+  // データをクリアする
+  public clearData(): void {
+    // オブジェクトを削除する
+    for (const id of Object.keys(this.AllStranaList)) {
+      this.removeCase(id);
+    }
+
+    this.AllStranaList = {};
+    this.currentIndex = null;
+  }
+
   // ケースを追加する
   private addCase(id: string): void {
     const ThreeObject = new THREE.Object3D();
@@ -73,6 +84,22 @@ export class ThreeSoilService {
     };
 
     this.scene.add(ThreeObject); // シーンに追加
+  }
+
+  // ケースのstranaを消去する
+  public removeCase(id: string): void {
+    if (!(id in this.AllStranaList)) {
+      return;
+    }
+
+    const data = this.AllStranaList[id];
+
+    const ThreeObject = data.ThreeObject;
+    this.scene.remove(ThreeObject);
+
+    delete this.AllStranaList[id];
+
+    this.scene.render();
   }
 
   // three.service から呼ばれる 表示・非表示の制御
@@ -108,5 +135,5 @@ export class ThreeSoilService {
     //this.isVisible.object = true;
   }
 
-  public getAllStranaList() {}
+
 }

@@ -60,6 +60,11 @@ export class ThreeStranaService {
     return;
   }
 
+  // データをクリアする -> 先にsoilでclearDataをしている
+  public clearData(): void {
+    this.AllStranaList = this.soil.AllStranaList;
+  }
+
   public resetData() {
     this.organizationList = this.strana.getOrganizationJson(0);
     for (let i = 1; i <= Object.keys(this.organizationList).length; i++) {
@@ -128,11 +133,15 @@ export class ThreeStranaService {
     // this.create(verticeList, ThreeObject,color);
     // とりあえずランダムに色を設定する
     let color = new THREE.Color(0x000000);
-    if (soilData.color === undefined) {
-      const a = Math.random();
-      color = new THREE.Color(0x00ffff * a);
+    if ( soilData !== undefined ) {
+      if (soilData.color == undefined) {
+        const a = Math.random();
+        color = new THREE.Color(0x00ffff * a);
+      } else {
+        color = new THREE.Color(soilData.color);
+      }
     } else {
-      color = new THREE.Color(soilData.color);
+      color = new THREE.Color(0x00ffff * Math.random());
     }
     this.create(verticeList, ThreeObject, color);
 
@@ -281,6 +290,7 @@ export class ThreeStranaService {
   // 地表面データの1次式を回収
   public getDetectedObjects() {
     //const detectedObjects = [];
+    this.detectedObjects = [];
     this.max_x = -65535;
     this.min_x = 65535;
 
@@ -314,6 +324,9 @@ export class ThreeStranaService {
 
       // 当たったobjectを検出する
       const objs = ray.intersectObjects(this.detectedObjects, true);
+      if (objs.length < 1) { 
+        continue;
+      }
       let min_distance = objs[0].distance;
       for (let num = 0; num < objs.length; num++) {
         min_distance = Math.min(min_distance, objs[num].distance);

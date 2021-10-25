@@ -26,7 +26,7 @@ export class ThreeService {
     private strana: ThreeStranaService,
     private waterlevel: ThreeWaterlevelService,
     private load: ThreeLoadService,
-    private result: ThreeResultService
+    private result: ThreeResultService,
   ) {}
 
   //////////////////////////////////////////////////////
@@ -128,12 +128,12 @@ export class ThreeService {
   // データをクリアする
   public ClearData(): void {
     // 節点データの削除
-    this.node.ClearData();
-    // this.member.ClearData();
-    // this.fixNode.ClearData();
-    // this.fixMember.ClearData();
-    // this.joint.ClearData();
-    // this.panel.ClearData();
+    this.node.clearData();
+    this.soil.clearData();
+    this.strana.clearData();
+    this.load.clearData();
+    this.waterlevel.clearData();
+    this.result.clearData();
     // this.load.ClearData();
     // this.disg.ClearData();
     // this.reac.ClearData();

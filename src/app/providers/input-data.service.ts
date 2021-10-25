@@ -4,6 +4,7 @@ import { StranaService } from '../components/input/strana/strana.service';
 import { WaterlevelService } from '../components/input/waterlevel/waterlevel.service';
 import { LoadService } from '../components/input/load/load.service';
 import { InitialConditionService } from '../components/input/initial-condition/initial-condition.service';
+import { ThreeService } from '../components/three/three.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ export class InputDataService {
     public strana: StranaService,
     public waterlevel: WaterlevelService,
     public load: LoadService,
-    public initialCondition: InitialConditionService
+    public initialCondition: InitialConditionService,
+    public three: ThreeService,
   ) {
     this.clear();
   }
