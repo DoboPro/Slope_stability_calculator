@@ -4,22 +4,11 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve --open",
-        "build": "ng build --configuration production --base-href \"https://dobopro.github.io/Slope_stability_calculator/\" && angular-cli-ghpages",
+        "build": "ng build --prod --base-href \"https://DoboPro.github.io/Slope_stability_calculator/\" && angular-cli-ghpages",
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e"
     },
-    "description": "斜面の安定計算",
-    "author": {
-        "name": "dobopro",
-        "email": "dobopro1106@gmail.com"
-    },
-    "keywords": [
-        "angular",
-        "angular 6",
-        "typescript",
-        "sass"
-    ],
     "private": true,
     "dependencies": {
         "@angular-devkit/schematics": "^10.1.0",
